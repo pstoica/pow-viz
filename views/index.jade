@@ -1,0 +1,21 @@
+doctype html
+html(lang="en")
+  head
+    title #{title}
+    link(rel="stylesheet", href="/stylesheets/main.css")
+  body
+    section.left-column
+      header.site-header
+        h1 #{title}
+      svg#map
+    section.right-column
+      p hello
+
+    script(src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js", charset="utf-8")
+    script(src="http://d3js.org/d3.v3.min.js", charset="utf-8")
+    script(src="http://d3js.org/topojson.v1.min.js", charset="utf-8")
+    script(src="datamaps.us.min.js", charset="utf-8")
+    script(type="text/javascript", src="//use.typekit.net/oje0oka.js")
+    script(src="scripts.js", charset="utf-8")
+    script(type="text/javascript").
+      try{Typekit.load();}catch(e){}
