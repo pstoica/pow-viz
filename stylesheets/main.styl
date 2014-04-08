@@ -1,4 +1,5 @@
 @import "normalize";
+@import "nib";
 @import "grid";
 
 // font variables
@@ -6,7 +7,14 @@ $base-font-family = "futura-pt";
 $base-font-size = 16px;
 
 // color variables
-$black =  #555555;
+$white = #ffffff;
+$black = #555555;
+$green = #57ac53;
+$red = #e14458;
+$blue = #659df5;
+$blue-light = #659df5;
+$purple = #b158ff;
+$orange = #fe941a;
 
 body {
   font-family: $base-font-family, sans-serif;
@@ -18,24 +26,135 @@ body {
 
 .site-header {
   text-transform: lowercase;
-  font-size: 40px;
+  text-align: center;
+  font-size: 28px;
 
   h1 {
     font-weight: lighter;
-    margin: 0 0 10px;
+    margin: 20px 0 10px;
   }
 }
 
-.left-column {
-  column(6);
+.row {
+  row();
 }
 
-.right-column {
-  column(6);
+.map-container {
+  column(5);
+}
+
+.details-container {
+  column(7);
+  padding: 35px 0 0;
+}
+
+.legend {
+  column(4);
+}
+
+.timeline {
+  column(8);
+}
+
+select {
+  display: inline-block;
+  margin: 0;
+  padding: 3px;
+  padding-right: 20px;
+  outline: none;
+  border: 2px solid $black;
+  border-radius: 0;
+  background: $white;
+  color: $black;
+  font-size: 30px;
+  font-weight: lighter;
+  cursor: pointer;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.custom-select {
+  position: relative;
+  display: inline-block;
+  margin-right: 10px;
+
+  &:after {
+    content: ' ';
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin-top: -8px;
+    margin-left: -18px;
+    vertical-align: middle;
+    border-top: 6px solid $black;
+    border-right: 6px solid rgba(0, 0, 0, 0);
+    border-left: 6px solid rgba(0, 0, 0, 0);   
+  }
+}
+
+.unstyled-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+// legend
+.legend ul {
+  font-style: italic;
+  text-transform: lowercase;
+  font-weight: lighter;
+  font-size: 20px;
+
+  li {
+    margin-bottom: 20px;
+  }
+}
+
+.price {
+  color: $green;
+}
+
+.medical {
+  color: $red;
+}
+
+.decriminalization {
+  color: $blue-light;
+}
+
+.medical-decriminalization {
+  color: $purple;
+}
+
+.legalized {
+  color: $orange;
+}
+
+// timeline
+.timeline {
+  font-weight: lighter;
+
+  li {
+    position: relative;
+    margin-bottom: 20px;
+    padding-left: 40px;
+    font-size: 24px;
+  }
+
+  .timeline-label {
+    color: $black;
+    display: inline-block;
+    transform: rotate(90deg);
+    position: absolute;
+    top: 15px;
+    left: 0;
+    font-size: 18px;
+  }
 }
 
 // map
 #map {
+  position: relative;
   width: 100%;
-  height: 400px;
+  height: 300px;
 }

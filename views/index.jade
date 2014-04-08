@@ -4,18 +4,65 @@ html(lang="en")
     title #{title}
     link(rel="stylesheet", href="/stylesheets/main.css")
   body
-    section.left-column
+    section.map-container
       header.site-header
         h1 #{title}
-      svg#map
-    section.right-column
-      p hello
+      #map(width="400", height="300")
+    section.details-container
+      .custom-select
+        select(name="location")
+          option(value="GA", selected=true) Georgia
+      .custom-select
+        select(name="quality")
+          option(value="low", selected=true) Low Quality
+          option(value="medium") Medium Quality
+          option(value="high") High Quality
+
+      #trend-chart
+      #price-chart
+
+      .row
+        .legend
+          ul.unstyled-list
+            li.price
+              #legend-price
+              | Price Per Gram
+            li.medical
+              #legend-medical
+              | Medical Cannabis Laws
+            li.decriminalization
+              #legend-decriminalization
+              | Decriminalization Laws
+            li.medical-decriminalization
+              #legend-medical-decriminalization
+              | Medical and Decriminalization Laws
+            li.legalized
+              #legend-legalized
+              | Legalized Cannabis
+        .timeline
+          ul.unstyled-list
+            li.medical-decriminalization
+              span.timeline-label 2009
+              | Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt.
+            li.medical
+              span.timeline-label 2010
+              | Jersey legislature approves medical cannabis. Governor Corzine signed the bill into law on January 18. Arizona's proposition 203, also called "Arizona Medical Marijuana Act", passes.
+            li
+              span.timeline-label 2011
+              | Gallup reports record 50% of Americans support legalization.
+            li.medical
+              span.timeline-label 2012
+              | Massachusetts voters passed the Massachusetts Medical Marijuana Initiative with 63% support, legalizing the use of medical marijuana. Massachusetts was the 18th state to legalize the medical use of marijuana.
+            li.legalized
+              span.timeline-label 2012
+              | Ballot initiatives make Washington and Colorado the first states to legalize recreation use.
+
 
     script(src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js", charset="utf-8")
     script(src="http://d3js.org/d3.v3.min.js", charset="utf-8")
     script(src="http://d3js.org/topojson.v1.min.js", charset="utf-8")
     script(src="datamaps.us.min.js", charset="utf-8")
-    script(type="text/javascript", src="//use.typekit.net/oje0oka.js")
     script(src="scripts.js", charset="utf-8")
+    script(type="text/javascript", src="//use.typekit.net/oje0oka.js")
     script(type="text/javascript").
       try{Typekit.load();}catch(e){}

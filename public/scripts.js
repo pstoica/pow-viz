@@ -1,7 +1,7 @@
 var mapContainer = $("#map"),
     map;
 
-// map drawing taken care of by datamaps: https://github.com/markmarkoh/datamaps
+// map drawing taken care of by datamaps: http://datamaps.github.io/
 function drawMap() {
   mapContainer.empty();
 
@@ -12,6 +12,8 @@ function drawMap() {
       defaultFill: '#555555'
     }
   });
+
+  // TODO: add bubbles for key events
 }
 
 // lazy responsive map hack

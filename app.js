@@ -1,6 +1,7 @@
 var express = require('express'),
     app = express(),
     stylus = require('stylus'),
+    nib = require('nib'),
     server;
 
 // starting our main routes
@@ -54,7 +55,8 @@ app.use(stylus.middleware({
   compile: function (str, path) {
     return stylus(str)
       .set('filename', path)
-      .set('compress', true);
+      .set('compress', true)
+      .use(nib());
   }
 }));
 
