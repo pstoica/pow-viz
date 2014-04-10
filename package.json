@@ -16,7 +16,6 @@
     "mongodb": "*",
     "monk": "*",
     "stylus": "*",
-    "nib": "^1.0.2",
-    "request":"latest"
+    "nib": "^1.0.2"
   }
 }

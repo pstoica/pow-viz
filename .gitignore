@@ -27,4 +27,6 @@ npm-debug.log
 .Spotlight-V100
 .Trashes
 
+/node_modules
+
 
