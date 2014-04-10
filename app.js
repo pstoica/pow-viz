@@ -2,7 +2,11 @@ var express = require('express'),
     app = express(),
     stylus = require('stylus'),
     nib = require('nib'),
-    server;
+    server, 
+    tl = require('./trend_loader.js'),
+    TrendLoader = new tl();
+
+TrendLoader.getTrendData(1,2,'US');
 
 // starting our main routes
 app.get('/', function (req, res) {
