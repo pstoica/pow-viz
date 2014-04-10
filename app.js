@@ -6,11 +6,14 @@ var express = require('express'),
     TrendLoader = require('./trend_loader.js'),
     tl = new TrendLoader();
 
-// using trend loader:
-// both date paramaters are standard js objs
-// tl.getTrendData(date1, date2,'US', function(result){
-//   //do whatever with result
-// });
+//using trend loader example.. get national trend data for year of 2011:
+//param1 - start date
+//param2 - end date
+//param3 - 2 digit state code; can be in upper or lower case
+//param4 - callback for result
+tl.getTrendData(new Date('2011'), new Date('2012'),'US', function(result){
+  console.log(result);
+});
 
 // starting our main routes
 app.get('/', function (req, res) {
