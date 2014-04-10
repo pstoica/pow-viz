@@ -3,10 +3,14 @@ var express = require('express'),
     stylus = require('stylus'),
     nib = require('nib'),
     server, 
-    tl = require('./trend_loader.js'),
-    TrendLoader = new tl();
+    TrendLoader = require('./trend_loader.js'),
+    tl = new TrendLoader();
 
-TrendLoader.getTrendData(1,2,'US');
+// using trend loader:
+// both date paramaters are standard js objs
+// tl.getTrendData(date1, date2,'US', function(result){
+//   //do whatever with result
+// });
 
 // starting our main routes
 app.get('/', function (req, res) {
