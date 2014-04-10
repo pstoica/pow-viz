@@ -12,7 +12,7 @@ var express = require('express'),
 //param3 - 2 digit state code; can be in upper or lower case
 //param4 - callback for result
 tl.getTrendData(new Date('2011'), new Date('2012'),'US', function(result){
-  console.log(result);
+  //console.log(result);
 });
 
 // starting our main routes
