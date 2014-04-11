@@ -23,9 +23,9 @@ TrendLoader.prototype.getTrendData = function getTrendData(loc, cb){
 			var dataPoint = jsonContent.table.rows[i];
 			var pointDate = new Date(dataPoint.c[0].v);
 
-			if(pointDate>=startDate && pointDate<=endDate){
-				jsonResult.push({date:pointDate, val:dataPoint.c[1].v});
-			}
+			// if(pointDate>=startDate && pointDate<=endDate){
+			// }
+			jsonResult.push({date:pointDate, val:dataPoint.c[1].v});
 		}
 
 		cb(jsonResult);
