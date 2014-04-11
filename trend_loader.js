@@ -9,7 +9,7 @@ Resulting output is an array of json. something like:
 
 function TrendLoader(){}
 
-TrendLoader.prototype.getTrendData = function getTrendData(startDate, endDate, loc, cb){	
+TrendLoader.prototype.getTrendData = function getTrendData(loc, cb){	
 	//loc can be us for nation or ga for a state like georgia for ex.
 	var fileName = 'public/trends_data/' + loc.toLowerCase() + '.js';
 
