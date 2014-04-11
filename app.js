@@ -5,18 +5,23 @@ var express = require('express'),
     server, 
     db = require('monk')('localhost/pow');
 
-var DataSource = require('./data_aggregator.js'),
-    ds = new DataSource(),
+var DataAggregator = require('./data_aggregator.js'),
+    da = new DataAggregator('mongodb://localhost/pow', 'weed_data'), //connectionURL, collection
     TrendLoader = require('./trend_loader.js'),
     tl = new TrendLoader();
 
-
-// ds.getNationalData(new Date('2011'), new Date('2012'), function(err, prices, stats){
+//Testing
+// da.getNationalData(new Date('2011'), new Date('2012'), function(err, prices, stats){
 //   console.log(prices);
 // });
 
-ds.getStateData(new Date('2011'), new Date('2012'), 'GA', function(err, prices, stats){
-  console.log(prices);
+// da.getStateData(new Date('2011'), new Date('2012'), 'GA', function(err, prices, stats){
+//   console.log(prices);
+// });
+
+tl.getTrendData('US', function(trendResult){
+  trends = trendResult;
+  console.log(trends);
 });
 
 // starting our main routes
@@ -46,7 +51,7 @@ app.get('/data/us.json', function (req, res) {
     trends: { }
   }
 
-  ds.getNationalData(start_date, end_date, function(err, priceResult, stats){
+  da.getNationalData(start_date, end_date, function(err, priceResult, stats){
     result.prices = priceResult;
 
     tl.getTrendData('US', function(trendResult){
@@ -67,7 +72,7 @@ app.get('/data/states/:state.json', function (req, res) {
   }
 
   //state needs to be an all caps 2 letter state code
-  ds.getStateData(start_date, end_date, state, function(err, priceResult, stats){
+  da.getStateData(start_date, end_date, state, function(err, priceResult, stats){
     result.prices = priceResult;
 
     tl.getTrendData(state, function(trendResult){
