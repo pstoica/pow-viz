@@ -5,7 +5,7 @@ var express = require('express'),
     server, 
     TrendLoader = require('./trend_loader.js'),
     tl = new TrendLoader(),
-    db = require('monk')('localhost/pow'),
+    db = require('monk')('localhost/pow');
 
 // starting our main routes
 app.get('/', function (req, res) {
