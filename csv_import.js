@@ -5,7 +5,7 @@ var fs = require('fs'),
 
 //class for importing csv data into mongo
 
-    //average per year, per locale, per quality
+	//average per year, per locale, per quality
 
 function CSVImporter(){};
 
@@ -23,6 +23,7 @@ CSVImporter.prototype.import_data = function import_data(){
 	})
 	.on('close', function(count){
 		console.log(count + ' lines processed\nImport Complete.');
+		process.exit(1);
 	})
 	.on('error', function(e){
 		console.log(e.message);
