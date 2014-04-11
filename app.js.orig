@@ -8,16 +8,12 @@ var express = require('express'),
 var DataSource = require('./data_aggregator.js'),
     ds = new DataSource(),
     TrendLoader = require('./trend_loader.js'),
+<<<<<<< HEAD
     tl = new TrendLoader();
-
-
-// ds.getNationalData(new Date('2011'), new Date('2012'), function(err, prices, stats){
-//   console.log(prices);
-// });
-
-ds.getStateData(new Date('2011'), new Date('2012'), 'GA', function(err, prices, stats){
-  console.log(prices);
-});
+=======
+    tl = new TrendLoader(),
+    db = require('monk')('localhost/pow');
+>>>>>>> 72ab800476c4415a603294b8bca14185b965c82e
 
 // starting our main routes
 app.get('/', function (req, res) {
