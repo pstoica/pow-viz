@@ -37,9 +37,10 @@ app.get('/data/us.json', function (req, res) {
   res.send(result);
 });
 
-app.get('/data/states/*.json', function (req, res) {
+app.get('/data/states/:state.json', function (req, res) {
   var start_date = req.query.start_date,
-      end_date = req.query.end_date;
+      end_date = req.query.end_date,
+      state = req.params.state;
 
   var result = {
     prices: { },
