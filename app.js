@@ -19,10 +19,10 @@ var DataAggregator = require('./data_aggregator.js'),
 //   console.log(prices);
 // });
 
-tl.getTrendData('US', function(trendResult){
-  trends = trendResult;
-  console.log(trends);
-});
+// tl.getTrendData('US', function(trendResult){
+//   trends = trendResult;
+//   console.log(trends);
+// });
 
 // starting our main routes
 app.get('/', function (req, res) {
