@@ -137,7 +137,7 @@ app.get('/', function (req, res) {
       events: events,
       moment: moment,
       start_date: new Date(2010, 8),
-      end_date: new Date(2014, 2)
+      end_date: new Date(2014, 3)
     }
   );
 });
