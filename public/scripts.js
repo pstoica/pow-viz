@@ -1,5 +1,7 @@
 var mapContainer = $("#map"),
     map;
+
+var states = ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY'];
 // event info
 var type = ['Decriminalization Laws', 'Medical Cannabis Laws', 
             'Both Medical and Decriminalization Laws', 'Legalized Cannabis'];
@@ -118,7 +120,7 @@ function drawMap() {
     element: mapContainer[0],
     scope: 'usa',
     fills: {
-      defaultFill: '#555555',
+      defaultFill: '#eeeeee',
       'Decriminalization Laws': '#4575D4',
       'Medical Cannabis Laws': '#FF4040',
       'Both Medical and Decriminalization Laws': '#9D3ED5',
@@ -141,15 +143,58 @@ function drawMap() {
   });
 }
 
+function colorMap() {
+  var value = $("#current-date-menu").val().split('-'),
+      year = value[0],
+      month = value[1],
+      quality = $("#quality-menu").val();
+
+  d3.json("/data/averages/" + year + "/" + month + ".json", function(error, json) {
+    if (error) return console.warn(error);
+
+    var color = d3.scale.linear()
+      .domain([0, 35])
+      .range(["#FCF8E3", "#84C569"]);
+
+    var choropleth = { };
+
+    $.each(states, function(i, state) {
+      choropleth[state] = "#eeeeee";
+    });
+
+    $.each(json, function(i, row) {
+      // TODO: use appropriate quality from dropdown
+      if (quality == "high" && row.value.high_avg) {
+        choropleth[row._id] = color(row.value.high_avg);
+      } else if (quality == "medium" && row.value.mid_avg) {
+        choropleth[row._id] = color(row.value.mid_avg);
+      } else if (quality == "low" && row.value.low_avg) {
+        choropleth[row._id] = color(row.value.low_avg);
+      } else {
+        choropleth[row._id] = "#eeeeee";
+      }
+    });
+
+    console.log(choropleth);
+
+    map.updateChoropleth(choropleth);
+  });
+}
+
 // lazy responsive map hack
-$(window).resize(function() {
+/*$(window).resize(function() {
   drawMap();
-})
+})*/
+
+// form field listeners
+// TODO: change what bubbles are shown according to active date
+$("#current-date-menu").on('change', colorMap);
+$("#quality-menu").on('change', colorMap);
 
 // initializing code
 function initialize() {
-  //createTimeline();
   drawMap();
+  colorMap();
 }
 
 initialize();
