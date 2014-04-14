@@ -5,6 +5,8 @@ var states = ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','
 // event info
 var type = ['Decriminalization Laws', 'Medical Cannabis Laws', 
             'Both Medical and Decriminalization Laws', 'Legalized Cannabis'];
+
+var curr_events;
 var events = [
      // events that happened before 2010
      { date: new Date(2000, 1, 1), state: 'ME',  fillKey: type[2], description: 'It removes state-level criminal penalties on the use, possession and cultivation of marijuana by patients who possess an oral or written "professional opinion" from their physician that he or she "might benefit from the medical use of marijuana"', latitude: 45.167, longitude: -69.051, radius: 5
@@ -127,9 +129,17 @@ function drawMap() {
       'Legalized Cannabis': '#886AB5'
     }
   });
+}
 
-  // bubbles for key events
-  map.bubbles(events, {
+function drawEvents() {
+  var value = $("#current-date-menu").val().split('-'),
+      year = value[0],
+      month = value[1];
+  var curr_date = new Date(year, month-1);
+  curr_events = events.filter(function(e) { if (e.date < curr_date) return e });
+
+  // bubbles for key events based on current year
+  map.bubbles(curr_events, {
     borderWidth: 0,
     fillOpacity: 1,
     highlightOnHover: false,
@@ -187,14 +197,14 @@ function colorMap() {
 })*/
 
 // form field listeners
-// TODO: change what bubbles are shown according to active date
-$("#current-date-menu").on('change', colorMap);
+$("#current-date-menu").on('change', colorMap, drawEvents);
 $("#quality-menu").on('change', colorMap);
 
 // initializing code
 function initialize() {
   drawMap();
   colorMap();
+  drawEvents();
 }
 
 initialize();
