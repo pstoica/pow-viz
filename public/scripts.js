@@ -121,10 +121,10 @@ function drawMap() {
     scope: 'usa',
     fills: {
       defaultFill: '#eeeeee',
-      'Decriminalization Laws': '#4575D4',
-      'Medical Cannabis Laws': '#FF4040',
-      'Both Medical and Decriminalization Laws': '#9D3ED5',
-      'Legalized Cannabis': '#FF7600'
+      'Decriminalization Laws': '#F0AD4E',
+      'Medical Cannabis Laws': '#D9534F',
+      'Both Medical and Decriminalization Laws': '#5BC0DE',
+      'Legalized Cannabis': '#886AB5'
     }
   });
 
