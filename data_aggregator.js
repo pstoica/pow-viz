@@ -27,9 +27,35 @@ function reduce(key,vals){
 		counts[vals[i].quality]++;
 	}
 
-	reducedVal['low_avg'] = sums['low']/counts['low'];
-	reducedVal['mid_avg'] = sums['medium']/counts['medium'];
-	reducedVal['high_avg'] = sums['high']/counts['high'];
+	reducedVal['low_avg'] = sums['low']/counts['low'] || undefined;
+	reducedVal['mid_avg'] = sums['medium']/counts['medium'] || undefined;
+	reducedVal['high_avg'] = sums['high']/counts['high'] || undefined;
+
+	return reducedVal;
+}
+
+function mapByState() {
+	var key = this.state;
+	var val = {
+		quality:this.quality,
+		ppg: this.ppg
+	};
+	emit(key, val);
+}
+
+function reduceByState(key,vals) {
+	var sums = {low:0, medium:0, high:0},
+		counts = {low:0, medium:0, high:0},
+		reducedVal = {low_avg:0, mid_avg:0, high_avg:0};
+
+	for(var i=0; i<vals.length;i++){
+		sums[vals[i].quality]+=vals[i].ppg
+		counts[vals[i].quality]++;
+	}
+
+	reducedVal['low_avg'] = sums['low']/counts['low'] || undefined;
+	reducedVal['mid_avg'] = sums['medium']/counts['medium'] || undefined;
+	reducedVal['high_avg'] = sums['high']/counts['high'] || undefined;
 
 	return reducedVal;
 }
@@ -71,7 +97,7 @@ DataAggregator.prototype.getNationalData = function getNationalData(startDate, e
 			reduce,
 			{
 				query: {
-					date:{$gt: startDate, $lt:endDate}
+					date:{$gte: startDate, $lt:endDate}
 				},
 				out: {inline:1}
 			},
@@ -79,6 +105,28 @@ DataAggregator.prototype.getNationalData = function getNationalData(startDate, e
 				for(var i in data){
 					data[i]._id = new Date(data[i]._id);
 				}
+				cb(err,data,stats);
+			}
+		);
+	});	
+}
+
+DataAggregator.prototype.getStateAverages = function getStateAverages(startDate, endDate, cb){
+	var self = this;
+
+	MongoClient.connect(self.connectionURL, function(err, db){
+		var collection = db.collection(self.collection);
+
+		collection.mapReduce(
+			mapByState,
+			reduceByState,
+			{
+				query: {
+					date:{$gte: startDate, $lt:endDate}
+				},
+				out: {inline:1}
+			},
+			function(err, data, stats){
 				cb(err,data,stats);
 			}
 		);

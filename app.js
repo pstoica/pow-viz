@@ -121,10 +121,6 @@ var events = [
 ];
 
 //Testing
-// da.getNationalData(new Date('2011'), new Date('2012'), function(err, prices, stats){
-//   console.log(prices);
-// });
-
 // da.getStateData(new Date('2011'), new Date('2012'), 'GA', function(err, prices, stats){
 //   console.log(prices);
 // });
@@ -139,20 +135,22 @@ app.get('/', function (req, res) {
   res.render('index', {
       title : 'Price of Weed Explorer',
       events: events,
-      moment: moment
+      moment: moment,
+      start_date: new Date(2010, 8),
+      end_date: new Date(2014, 2)
     }
   );
 });
 
-app.get('/events.json', function (req, res) {
-  // perhaps we should use dates as keys instead of making an array
-  // this'll make it easier to check if there's an event for a given day
-  // are there multiple events for a day? maybe the value should be an array of events
+app.get('/data/averages/:year/:month.json', function (req, res) {
+  var year = req.params.year,
+      month = req.params.month - 1,
+      start_date = new Date(year, month),
+      end_date = new Date(year, month + 1);
 
-  // events can likely have states associated with them, as well as a type
-  var result = { };
-
-  res.send(result);
+  da.getStateAverages(start_date, end_date, function(err, prices, stats){
+    res.send(prices);
+  });
 });
 
 app.get('/data/us.json', function (req, res) {

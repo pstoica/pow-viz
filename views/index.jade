@@ -8,13 +8,15 @@ html(lang="en")
       .row
         .col-sm-6
           .page-header
-            h1 #{title}
+            h1
+              span.glyphicon.glyphicon-tree-deciduous.text-green
+              |  #{title}
 
           .row
             .col-sm-7
               .list-group#timeline.scrollable
                 each e in events
-                  a(href="#").list-group-item(class="list-group-item-#{e.fillKey}")
+                  a.list-group-item(href="#", class="list-group-item-#{e.fillKey}")
                     if e.specificDate
                       h4.list-group-item-heading #{moment(e.date).format("MMMM Do YYYY")}
                     else
@@ -76,6 +78,13 @@ html(lang="en")
                     select.form-control
                       option(value="GA") Georgia
 
+                .form-group
+                  label.control-label.col-sm-6 Date
+                  .col-sm-6
+                    select.form-control#current-date-menu
+                      - for (var i = moment(start_date); i < moment(end_date); i = i.add('months', 1))
+                        option(value="#{i.format('YYYY-MM')}") #{i.format('MMM YYYY')}
+
         .col-sm-6
           #map
 
@@ -87,7 +96,7 @@ html(lang="en")
     script(src="http://d3js.org/d3.v3.min.js", charset="utf-8")
     script(src="http://d3js.org/topojson.v1.min.js", charset="utf-8")
     script(src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.5.1/moment.min.js", charset="utf-8")
-    script(src="datamaps.us.min.js", charset="utf-8")
+    script(src="datamaps.us.js", charset="utf-8")
     script(src="scripts.js", charset="utf-8")
     script(type="text/javascript", src="//use.typekit.net/oje0oka.js")
     script(type="text/javascript").
