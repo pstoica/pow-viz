@@ -1,7 +1,6 @@
 var express = require('express'),
     app = express(),
-    stylus = require('stylus'),
-    nib = require('nib'),
+    lessMiddleware = require('less-middleware'),
     server, 
     db = require('monk')('localhost/pow');
 
@@ -84,16 +83,11 @@ app.get('/data/states/:state.json', function (req, res) {
 
 // setting up middleware
 
-// stylus
-app.use(stylus.middleware({
+// less
+app.use(lessMiddleware({
   src: __dirname,
-  dest: __dirname + "/public",
-  compile: function (str, path) {
-    return stylus(str)
-      .set('filename', path)
-      .set('compress', true)
-      .use(nib());
-  }
+  dest: __dirname + '/public',
+  compress: true
 }));
 
 // jade

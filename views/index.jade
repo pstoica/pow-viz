@@ -4,63 +4,81 @@ html(lang="en")
     title #{title}
     link(rel="stylesheet", href="/stylesheets/main.css")
   body
-    section.map-container
-      header.site-header
-        h1 #{title}
-      #map(width="400", height="300")
-    section.details-container
-      .custom-select
-        select(name="location")
-          option(value="GA", selected=true) Georgia
-      .custom-select
-        select(name="quality")
-          option(value="low", selected=true) Low Quality
-          option(value="medium") Medium Quality
-          option(value="high") High Quality
-
-      #trend-chart
-      #price-chart
-
+    .container-fluid
       .row
-        .legend
-          ul.unstyled-list
-            li.price
-              #legend-price
-              | Price Per Gram
-            li.medical
-              #legend-medical
-              | Medical Cannabis Laws
-            li.decriminalization
-              #legend-decriminalization
-              | Decriminalization Laws
-            li.medical-decriminalization
-              #legend-medical-decriminalization
-              | Medical and Decriminalization Laws
-            li.legalized
-              #legend-legalized
-              | Legalized Cannabis
-        .timeline
-          ul.unstyled-list
-            li.medical-decriminalization
-              span.timeline-label 2009
-              | Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt.
-            li.medical
-              span.timeline-label 2010
-              | Jersey legislature approves medical cannabis. Governor Corzine signed the bill into law on January 18. Arizona's proposition 203, also called "Arizona Medical Marijuana Act", passes.
-            li
-              span.timeline-label 2011
-              | Gallup reports record 50% of Americans support legalization.
-            li.medical
-              span.timeline-label 2012
-              | Massachusetts voters passed the Massachusetts Medical Marijuana Initiative with 63% support, legalizing the use of medical marijuana. Massachusetts was the 18th state to legalize the medical use of marijuana.
-            li.legalized
-              span.timeline-label 2012
-              | Ballot initiatives make Washington and Colorado the first states to legalize recreation use.
+        .col-sm-6
+          .page-header
+            h1 #{title}
 
+          #trend-chart
+          #price-chart
+
+          .row
+            .col-sm-7
+              div.list-group.timeline
+                a(href="#").list-group-item.list-group-item-info
+                  h4.list-group-item-heading January 2009
+                  p.list-group-item-text Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt.
+                a(href="#").list-group-item.list-group-item-danger
+                  h4.list-group-item-heading February 2010
+                  p.list-group-item-text Jersey legislature approves medical cannabis. Governor Corzine signed the bill into law on January 18. Arizona's proposition 203, also called "Arizona Medical Marijuana Act", passes.
+                a(href="#").list-group-item
+                  h4.list-group-item-heading March 2011
+                  p.list-group-item-text Gallup reports record 50% of Americans support legalization.
+                a(href="#").list-group-item.list-group-item-danger
+                  h4.list-group-item-heading April 2012
+                  p.list-group-item-text
+                    | Massachusetts voters passed the Massachusetts Medical Marijuana Initiative with 63% support, legalizing the use of medical marijuana. Massachusetts was the 18th state to legalize the medical use of marijuana.
+                a(href="#").list-group-item.list-group-item-success
+                  h4.list-group-item-heading May 2012
+                  p.list-group-item-text
+                    | Ballot initiatives make Washington and Colorado the first states to legalize recreation use.
+            .col-sm-5
+              ul.legend.list-unstyled
+                li.medical
+                  i.glyphicon.glyphicon-tint
+                  |  Medical Cannabis Laws
+                li.decriminalization
+                  i.glyphicon.glyphicon-tint
+                  |  Decriminalization Laws
+                li.medical-decriminalization
+                  i.glyphicon.glyphicon-tint
+                  |  Medical and Decriminalization Laws
+                li.legalized
+                  i.glyphicon.glyphicon-tint
+                  |  Legalized Cannabis
+
+              .form.form-horizontal
+                .form-group
+                  label.control-label.col-sm-6 Price Per Gram
+                  .col-sm-6.text-right
+                    .btn-group
+                      span.btn.btn-xs.btn-price-1 $0
+                      span.btn.btn-xs.btn-price-2 &nbsp;&nbsp;
+                      span.btn.btn-xs.btn-price-3 &nbsp;&nbsp;
+                      span.btn.btn-xs.btn-price-4 &nbsp;&nbsp;
+                      span.btn.btn-xs.btn-price-5 $35
+                .form-group
+                  label.control-label.col-sm-6 Quality
+                  .col-sm-6
+                    select.form-control
+                      option(value="low") Low
+                      option(value="medium") Medium
+                      option(value="high") High
+                .form-group
+                  label.control-label.col-sm-6 Location
+                  .col-sm-6
+                    select.form-control
+                      option(value="GA") Georgia
+
+        .col-sm-6
+          #map
 
     script(src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js", charset="utf-8")
+    script(src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js")
     script(src="http://d3js.org/d3.v3.min.js", charset="utf-8")
     script(src="http://d3js.org/topojson.v1.min.js", charset="utf-8")
+    script(src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.5.1/moment.min.js", charset="utf-8")
     script(src="datamaps.us.min.js", charset="utf-8")
     script(src="scripts.js", charset="utf-8")
     script(type="text/javascript", src="//use.typekit.net/oje0oka.js")

@@ -1,0 +1,63 @@
+@import "../public/bower_components/bootstrap/less/bootstrap";
+
+@font-family-sans-serif: "proxima-nova", sans-serif;
+@font-size-base: 18px;
+
+// quick fix for icon font path
+@icon-font-path: '/bower_components/bootstrap/dist/fonts/';
+
+@green: @state-success-bg;
+@brand-success: lighten(#563D7C, 20%);
+@state-success-bg: #CDBFE3;
+@state-success-text: @brand-success;
+
+.medical {
+  color: @brand-danger;
+}
+
+.decriminalization {
+  color: @brand-warning;
+}
+
+.medical-decriminalization {
+  color: @brand-info;
+}
+
+.legalized {
+  color: @brand-success;
+}
+
+@color-scale-start: darken(@state-warning-bg, 0%);
+@color-scale-end:   darken(#dff0d8, 30%);
+
+.btn-price-1 {
+  background-color: @color-scale-start;
+}
+
+.btn-price-2 {
+  background-color: mix(@color-scale-start, @color-scale-end, 75%)
+}
+
+.btn-price-3 {
+  background-color: mix(@color-scale-start, @color-scale-end, 50%)
+}
+
+.btn-price-4 {
+  background-color: mix(@color-scale-start, @color-scale-end, 25%)
+}
+
+.btn-price-5 {
+  background-color: @color-scale-end;
+}
+
+#map {
+  position: relative;
+  width: 110%;
+  height: 500px;
+}
+
+.scrollable-menu {
+  height: auto;
+  max-height: 300px;
+  overflow-x: hidden;
+}
