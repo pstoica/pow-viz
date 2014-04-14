@@ -17,6 +17,7 @@
     "mongodb": "*",
     "monk": "*",
     "less-middleware": "~0.1.15",
-    "csv": "latest"
+    "csv": "latest",
+    "moment": "^2.6.0"
   }
 }

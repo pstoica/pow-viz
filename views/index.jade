@@ -10,12 +10,17 @@ html(lang="en")
           .page-header
             h1 #{title}
 
-          #trend-chart
-          #price-chart
-
           .row
             .col-sm-7
-              div.list-group.timeline
+              .list-group#timeline.scrollable
+                each e in events
+                  a(href="#").list-group-item(class="list-group-item-#{e.fillKey}")
+                    if e.specificDate
+                      h4.list-group-item-heading #{moment(e.date).format("MMMM Do YYYY")}
+                    else
+                      h4.list-group-item-heading #{moment(e.date).format("MMMM YYYY")}
+                    p.list-group-item-text #{e.description}
+              //-div.list-group.timeline
                 a(href="#").list-group-item.list-group-item-info
                   h4.list-group-item-heading January 2009
                   p.list-group-item-text Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt.
@@ -34,18 +39,18 @@ html(lang="en")
                   p.list-group-item-text
                     | Ballot initiatives make Washington and Colorado the first states to legalize recreation use.
             .col-sm-5
-              ul.legend.list-unstyled
+              ul.legend.list-unstyled.lead.text-right
                 li.medical
-                  i.glyphicon.glyphicon-tint
+                  //i.glyphicon.glyphicon-tint
                   |  Medical Cannabis Laws
                 li.decriminalization
-                  i.glyphicon.glyphicon-tint
+                  //i.glyphicon.glyphicon-tint
                   |  Decriminalization Laws
                 li.medical-decriminalization
-                  i.glyphicon.glyphicon-tint
-                  |  Medical and Decriminalization Laws
+                  //i.glyphicon.glyphicon-tint
+                  |  Medical &amp; Decrimin. Laws
                 li.legalized
-                  i.glyphicon.glyphicon-tint
+                  //i.glyphicon.glyphicon-tint
                   |  Legalized Cannabis
 
               .form.form-horizontal
@@ -73,6 +78,9 @@ html(lang="en")
 
         .col-sm-6
           #map
+
+          #trend-chart
+          #price-chart
 
     script(src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js", charset="utf-8")
     script(src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js")

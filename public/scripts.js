@@ -21,26 +21,29 @@ var events = [
   }, { date: new Date(2000, 1, 1), state: 'NC',  fillKey: type[0], description: '', latitude: 35.88, longitude: -79.09, radius: 5
   }, { date: new Date(2000, 1, 1), state: 'OH',  fillKey: type[0], description: '', latitude: 40.41, longitude: -82.75, radius: 5
   }, {
-    date: new Date(2010, 0, 1),
+    date: new Date(2010, 0, 11),
     state: 'NJ', 
     fillKey: type[1],
-    description: 'Jan. 11, 2010 - New Jersey Becomes 14th State to Legalize Medical Marijuana',
+    description: 'New Jersey Becomes 14th State to Legalize Medical Marijuana',
+    specificDate: true,
     latitude: 39.367,
     longitude: -74.751,
     radius: 5
   }, {
-    date: new Date(2010, 10, 1),
+    date: new Date(2010, 10, 2),
     state: 'AZ', 
     fillKey: type[1],
-    description: 'Nov. 2, 2010 - Arizona Becomes 15th State to Legalize Medical Marijuana',
+    description: 'Arizona Becomes 15th State to Legalize Medical Marijuana',
+    specificDate: true,
     latitude: 34.251,
     longitude: -111.785,
     radius: 5 
   }, {
-    date: new Date(2011, 4, 1),
+    date: new Date(2011, 4, 13),
     state: 'DE', 
     fillKey: type[1],
     description: 'May 13, 2011 - Delaware Becomes 16th State to Legalize Medical Marijuana',
+    specificDate: true,
     latitude: 38.891,
     longitude: -75.410,
     radius: 5
@@ -53,18 +56,20 @@ var events = [
     longitude: -72.721,
     radius: 5
   }, {
-    date: new Date(2012, 4, 1),
+    date: new Date(2012, 4, 31),
     state: 'CT', 
     fillKey: type[1],
-    description: 'May 31, 2012 - Connecticut Becomes 17th State to Legalize Medical Marijuana',
+    description: 'Connecticut Becomes 17th State to Legalize Medical Marijuana',
+    specificDate: true,
     latitude: 41.67,
     longitude: -72.721,
     radius: 5
   }, {
-    date: new Date(2012, 10, 1),
+    date: new Date(2012, 10, 6),
     state: 'MA', 
     fillKey: type[1],
-    description: 'Nov. 6, 2012 - Massachusetts Becomes 18th state to Legalize Medical Marijuana',
+    description: 'Massachusetts Becomes 18th state to Legalize Medical Marijuana',
+    specificDate: true,
     latitude: 42.407,
     longitude: -72.465,
     radius: 5
@@ -88,7 +93,8 @@ var events = [
     date: new Date(2013, 6, 1),
     state: 'NH', 
     fillKey: type[1],
-    description: 'July 23, 2013 - New Hampshire Becomes 19th State to Legalize Medical Marijuana',
+    description: 'New Hampshire Becomes 19th State to Legalize Medical Marijuana',
+    specificDate: true,
     latitude: 43.357,
     longitude: -71.589,
     radius: 5
@@ -96,7 +102,8 @@ var events = [
     date: new Date(2013, 7, 1),
     state: 'IL', 
     fillKey: type[1],
-    description: 'Aug. 1, 2013 - Illinois Becomes 20th State to Legalize Medical Marijuana',
+    description: 'Illinois Becomes 20th State to Legalize Medical Marijuana',
+    specificDate: true,
     latitude: 40.245,
     longitude: -89.472,
     radius: 5
@@ -140,4 +147,9 @@ $(window).resize(function() {
 })
 
 // initializing code
-drawMap();
+function initialize() {
+  //createTimeline();
+  drawMap();
+}
+
+initialize();
