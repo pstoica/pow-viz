@@ -259,7 +259,6 @@ function trendChart() {
 })*/
 
 // form field listeners
-<<<<<<< HEAD
 // TODO: change what bubbles are shown according to active date
 var timeSlider = $("#time-slider"),
     qualityMenu = $("#quality-menu"),
@@ -307,10 +306,9 @@ function updateTime() {
   currentDate.find('.lead').html(moment(date).format('MMMM YYYY'));
   colorMap();
 }
-=======
+
 $("#current-date-menu").on('change', colorMap, drawEvents);
 $("#quality-menu").on('change', colorMap);
->>>>>>> b814c42a254e3212422066ae2586ebd194f621e0
 
 // initializing code
 function initialize() {
