@@ -165,7 +165,6 @@ function colorMap() {
     });
 
     $.each(json, function(i, row) {
-      // TODO: use appropriate quality from dropdown
       if (quality == "high" && row.value.high_avg) {
         choropleth[row._id] = color(row.value.high_avg);
       } else if (quality == "medium" && row.value.mid_avg) {
@@ -176,8 +175,6 @@ function colorMap() {
         choropleth[row._id] = "#eeeeee";
       }
     });
-
-    console.log(choropleth);
 
     map.updateChoropleth(choropleth);
   });
@@ -217,14 +214,15 @@ timePlay.on('click', function() {
   } else {
     timePlay.find('.glyphicon').removeClass('glyphicon-play').addClass('glyphicon-pause')
 
-    playInterval = setInterval(nextTime, 2000);
+    nextTime();
+
+    playInterval = setInterval(nextTime, 1000);
   }
 })
 
 timeNext.on('click', nextTime);
 
 function nextTime() {
-  console.log('hi');
   timeSlider.val(parseInt(timeSlider.val()) + 1);
   updateTime();
 }

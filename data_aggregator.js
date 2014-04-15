@@ -3,8 +3,16 @@ var MongoClient = require('mongodb').MongoClient;
 //average per year, per locale, per quality
 
 function DataAggregator(connectionURL, collection){
+	var self = this;
+
 	this.connectionURL = connectionURL;
 	this.collection = collection;
+
+	MongoClient.connect(connectionURL, function(err, database) {
+  	if(err) throw err;
+
+  	self.db = database;
+  });
 };
 
 function map(){
@@ -63,74 +71,68 @@ function reduceByState(key,vals) {
 DataAggregator.prototype.getStateData = function getStateData(startDate, endDate, loc, cb){
 	var self = this;
 
-	MongoClient.connect(self.connectionURL, function(err, db){
-		var collection = db.collection(self.collection);
+	var collection = self.db.collection(self.collection);
 
-		collection.mapReduce(
-			map,
-			reduce,
-			{
-				query: {
-					// state:loc, 
-					date:{$gte: startDate, $lt:endDate}
-				},
-				out: {inline:1}
+	collection.mapReduce(
+		map,
+		reduce,
+		{
+			query: {
+				// state:loc, 
+				date:{$gte: startDate, $lt:endDate}
 			},
-			function(err, data, stats){
-				for(var i in data){
-					data[i]._id = new Date(data[i]._id);
-				}
-				cb(err,data,stats);
+			out: {inline:1}
+		},
+		function(err, data, stats){
+			for(var i in data){
+				data[i]._id = new Date(data[i]._id);
 			}
-		);
-	});
+			cb(err,data,stats);
+		}
+	);
 }
 
 DataAggregator.prototype.getNationalData = function getNationalData(startDate, endDate, cb){
 	var self = this;
 
-	MongoClient.connect(self.connectionURL, function(err, db){
-		var collection = db.collection(self.collection);
+	var collection = self.db.collection(self.collection);
 
-		collection.mapReduce(
-			map,
-			reduce,
-			{
-				query: {
-					date:{$gte: startDate, $lt:endDate}
-				},
-				out: {inline:1}
+	collection.mapReduce(
+		map,
+		reduce,
+		{
+			query: {
+				date:{$gte: startDate, $lt:endDate}
 			},
-			function(err, data, stats){
-				for(var i in data){
-					data[i]._id = new Date(data[i]._id);
-				}
-				cb(err,data,stats);
+			out: {inline:1}
+		},
+		function(err, data, stats){
+			for(var i in data){
+				data[i]._id = new Date(data[i]._id);
 			}
-		);
-	});	
+			cb(err,data,stats);
+		}
+	);
 }
 
 DataAggregator.prototype.getStateAverages = function getStateAverages(startDate, endDate, cb){
 	var self = this;
 
-	MongoClient.connect(self.connectionURL, function(err, db){
-		var collection = db.collection(self.collection);
+	var collection = self.db.collection(self.collection);
 
-		collection.mapReduce(
-			mapByState,
-			reduceByState,
-			{
-				query: {
-					date:{$gte: startDate, $lt:endDate}
-				},
-				out: {inline:1}
+	collection.mapReduce(
+		mapByState,
+		reduceByState,
+		{
+			query: {
+				date:{$gte: startDate, $lt:endDate}
 			},
-			function(err, data, stats){
-				cb(err,data,stats);
-			}
-		);
-	});	
+			out: {inline:1}
+		},
+		function(err, data, stats){
+			cb(err,data,stats);
+		}
+	);
 }
 
 module.exports = DataAggregator;
