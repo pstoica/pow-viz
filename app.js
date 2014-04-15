@@ -133,7 +133,6 @@ var events = [
 // starting our main routes
 app.get('/', function (req, res) {
   res.render('index', {
-      title : 'Price of Weed Explorer',
       events: events,
       moment: moment,
       start_date: new Date(2010, 8),

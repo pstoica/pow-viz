@@ -10,7 +10,8 @@ html(lang="en")
           .page-header
             h1
               span.glyphicon.glyphicon-tree-deciduous.text-green
-              |  #{title}
+              |  Price of Weed 
+              small Explorer &amp; Timeline
 
           .row
             .col-sm-7
@@ -78,7 +79,7 @@ html(lang="en")
                     select.form-control
                       option(value="GA") Georgia
 
-                .form-group
+                //-.form-group
                   label.control-label.col-sm-6 Date
                   .col-sm-6
                     select.form-control#current-date-menu
@@ -87,6 +88,23 @@ html(lang="en")
 
         .col-sm-6
           #map
+
+          .text-center
+            #current-date
+              span.lead September 2010
+
+            form#slider-container.form-inline
+              span.control-label  #{moment(start_date).format('MMM YYYY')}
+              input#time-slider(type="range", min="0", max="#{moment(end_date).diff(moment(start_date), 'months', true) - 1}", value="0")
+              span.control-label #{moment(end_date).format('MMM YYYY')} 
+
+            .btn-group
+              a(href="javascript:0").btn.btn-success.btn-xs#time-back
+                span.glyphicon.glyphicon-backward
+              a(href="javascript:0").btn.btn-success.btn-xs#time-play
+                span.glyphicon.glyphicon-play
+              a(href="javascript:0").btn.btn-success.btn-xs#time-next
+                span.glyphicon.glyphicon-forward
 
           #trend-chart
           #price-chart

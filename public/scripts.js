@@ -1,5 +1,7 @@
 var mapContainer = $("#map"),
-    map;
+    map,
+    start_year = 2010,
+    start_month = 8;
 
 var states = ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY'];
 // event info
@@ -144,9 +146,9 @@ function drawMap() {
 }
 
 function colorMap() {
-  var value = $("#current-date-menu").val().split('-'),
-      year = value[0],
-      month = value[1],
+  var date = new Date(start_year, start_month + parseInt($("#time-slider").val())),
+      year = date.getFullYear(),
+      month = date.getMonth() + 1,
       quality = $("#quality-menu").val();
 
   d3.json("/data/averages/" + year + "/" + month + ".json", function(error, json) {
@@ -188,8 +190,51 @@ function colorMap() {
 
 // form field listeners
 // TODO: change what bubbles are shown according to active date
-$("#current-date-menu").on('change', colorMap);
-$("#quality-menu").on('change', colorMap);
+var timeSlider = $("#time-slider"),
+    qualityMenu = $("#quality-menu"),
+    timeBack = $("#time-back"),
+    timePlay = $("#time-play"),
+    timeNext = $("#time-next"),
+    currentDate = $("#current-date"),
+    playInterval,
+    isPlaying = false;
+
+timeSlider.on('change', colorMap);
+qualityMenu.on('change', colorMap);
+
+timeBack.on('click', function() {
+  timeSlider.val(parseInt(timeSlider.val()) - 1);
+  updateTime();
+});
+
+timePlay.on('click', function() {
+  isPlaying = !isPlaying;
+
+  if (!isPlaying) {
+    timePlay.find('.glyphicon').removeClass('glyphicon-pause').addClass('glyphicon-play')
+
+    clearInterval(playInterval);
+  } else {
+    timePlay.find('.glyphicon').removeClass('glyphicon-play').addClass('glyphicon-pause')
+
+    playInterval = setInterval(nextTime, 2000);
+  }
+})
+
+timeNext.on('click', nextTime);
+
+function nextTime() {
+  console.log('hi');
+  timeSlider.val(parseInt(timeSlider.val()) + 1);
+  updateTime();
+}
+
+function updateTime() {
+  var date = new Date(start_year, start_month + parseInt($("#time-slider").val()));
+  
+  currentDate.find('.lead').html(moment(date).format('MMMM YYYY'));
+  colorMap();
+}
 
 // initializing code
 function initialize() {
