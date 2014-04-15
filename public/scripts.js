@@ -183,8 +183,8 @@ function colorMap() {
 
 function trendChart() {
   var margin = {top: 20, right: 20, bottom: 30, left: 50},
-      width = 700 - margin.left - margin.right,
-      height = 300 - margin.top - margin.bottom,
+      width = 850 - margin.left - margin.right,
+      height = 200 - margin.top - margin.bottom,
       trends;
 
   var parseDate = d3.time.format("%Y-%m-%dT%H:%M:%S.%LZ").parse;
@@ -198,7 +198,8 @@ function trendChart() {
       .orient("bottom");
   var yAxis = d3.svg.axis()
       .scale(y)
-      .orient("left");
+      .orient("left")
+      .ticks(5);
 
   var line = d3.svg.line()
     .x(function(d) { return x(d.date); })
@@ -221,32 +222,26 @@ function trendChart() {
     });
 
     x.domain(d3.extent(trends, function(d) { return d.date; }));
-    y.domain(d3.extent(trends, function(d) { return d.val; }));
+    y.domain([0,100]);
 
     svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + height + ")")
         .call(xAxis)
-      .append("text")
-        .attr("dx", ".71em")
-        .attr("y", 22)
-        .style("text-anchor", "end")
-        .text("Date");
 
     svg.append("g")
         .attr("class", "y axis")
         .call(yAxis)
       .append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("y", 7)
+        .attr("x", 50)
         .attr("dy", ".71em")
-        .style("text-anchor", "end")
-        .text("Value");
+        .style("text-anchor", "center")
+        .text("Google Trends");
 
     svg.append("path")
         .datum(trends)
         .attr("class", "line")
-        .attr("d", line);
+        .attr("d", line(trends));
   });
 }
 
