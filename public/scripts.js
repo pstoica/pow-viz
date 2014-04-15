@@ -135,11 +135,8 @@ function drawMap() {
 }
 
 function drawEvents() {
-  var value = $("#current-date-menu").val().split('-'),
-      year = value[0],
-      month = value[1] - 1;
-  var curr_date = new Date(year, month);
-  curr_events = events.filter(function(e) { if (e.date < curr_date) return e });
+  var curr_date = new Date(start_year, start_month + parseInt(timeSlider.val()));
+  curr_events = events.filter(function(e) { if (e.date <= curr_date) return e });
 
   // bubbles for key events based on current year
   map.bubbles(curr_events, {
@@ -269,7 +266,7 @@ var timeSlider = $("#time-slider"),
     playInterval,
     isPlaying = false;
 
-timeSlider.on('change', colorMap);
+timeSlider.on('change', updateTime);
 qualityMenu.on('change', colorMap);
 
 timeBack.on('click', function() {
@@ -304,11 +301,11 @@ function updateTime() {
   var date = new Date(start_year, start_month + parseInt($("#time-slider").val()));
   
   currentDate.find('.lead').html(moment(date).format('MMMM YYYY'));
+  drawEvents();
   colorMap();
 }
 
-$("#current-date-menu").on('change', colorMap, drawEvents);
-$("#quality-menu").on('change', colorMap);
+//$("#current-date-menu").on('change', colorMap, drawEvents);
 
 // initializing code
 function initialize() {
