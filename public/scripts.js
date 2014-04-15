@@ -1,5 +1,6 @@
 var mapContainer = $("#map"),
-    map;
+    map,
+    priceContainer = $("#price-chart");
 
 var states = ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY'];
 // event info
@@ -134,22 +135,15 @@ function drawMap() {
 function drawEvents() {
   var value = $("#current-date-menu").val().split('-'),
       year = value[0],
-      month = value[1];
-  var curr_date = new Date(year, month-1);
+      month = value[1] - 1;
+  var curr_date = new Date(year, month);
   curr_events = events.filter(function(e) { if (e.date < curr_date) return e });
 
   // bubbles for key events based on current year
   map.bubbles(curr_events, {
     borderWidth: 0,
     fillOpacity: 1,
-    highlightOnHover: false,
-    popupTemplate: function (geo, data) { 
-            return ['<div class="hoverinfo"><strong>' + data.state + '</strong>',
-            '<br/>Type: ' +  data.fillKey,
-            '<br/>Date: ' +  data.date + '',
-            '<br/>Description: ' +  data.description + '',
-            '</div>'].join('');
-    }
+    //highlightOnHover: false,
   });
 }
 
@@ -191,6 +185,75 @@ function colorMap() {
   });
 }
 
+function trendChart() {
+  var margin = {top: 20, right: 20, bottom: 30, left: 50},
+      width = 700 - margin.left - margin.right,
+      height = 300 - margin.top - margin.bottom,
+      trends;
+
+  var parseDate = d3.time.format("%Y-%m-%dT%H:%M:%S.%LZ").parse;
+
+  var x = d3.time.scale()
+      .range([0, width]);
+  var y = d3.scale.linear()
+      .range([height, 0]);
+  var xAxis = d3.svg.axis()
+      .scale(x)
+      .orient("bottom");
+  var yAxis = d3.svg.axis()
+      .scale(y)
+      .orient("left");
+
+  var line = d3.svg.line()
+    .x(function(d) { return x(d.date); })
+    .y(function(d) { return y(d.val); });
+
+  var svg = d3.select(mapContainer[0]).append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  // just get US data for now
+  d3.json("/data/us.json", function(error, json) {
+    if (error) return console.warn(error);
+    
+    trends = json.trends;
+    trends.forEach(function(d) {
+      d.date = parseDate(d.date);
+      d.val = +d.val;
+    });
+
+    x.domain(d3.extent(trends, function(d) { return d.date; }));
+    y.domain(d3.extent(trends, function(d) { return d.val; }));
+
+    svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis)
+      .append("text")
+        .attr("dx", ".71em")
+        .attr("y", 22)
+        .style("text-anchor", "end")
+        .text("Date");
+
+    svg.append("g")
+        .attr("class", "y axis")
+        .call(yAxis)
+      .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 7)
+        .attr("dy", ".71em")
+        .style("text-anchor", "end")
+        .text("Value");
+
+    svg.append("path")
+        .datum(trends)
+        .attr("class", "line")
+        .attr("d", line);
+  });
+}
+
 // lazy responsive map hack
 /*$(window).resize(function() {
   drawMap();
@@ -205,6 +268,7 @@ function initialize() {
   drawMap();
   colorMap();
   drawEvents();
+  trendChart();
 }
 
 initialize();
