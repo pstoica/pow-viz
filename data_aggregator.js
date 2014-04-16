@@ -9,11 +9,11 @@ function DataAggregator(connectionURL, collection){
 	this.collection = collection;
 
 	MongoClient.connect(connectionURL, function(err, database) {
-  	if(err) throw err;
+	  	if(err) throw err;
 
-  	self.db = database;
-  });
-};
+	  	self.db = database;
+  	});
+}
 
 function map(){
 	var d = new Date(this.date);
@@ -71,14 +71,19 @@ function reduceByState(key,vals) {
 DataAggregator.prototype.getStateData = function getStateData(startDate, endDate, loc, cb){
 	var self = this;
 
+	if(self.db==null){
+		return;
+	}
+
 	var collection = self.db.collection(self.collection);
+
 
 	collection.mapReduce(
 		map,
 		reduce,
 		{
 			query: {
-				// state:loc, 
+				state:loc, 
 				date:{$gte: startDate, $lt:endDate}
 			},
 			out: {inline:1}
@@ -94,6 +99,10 @@ DataAggregator.prototype.getStateData = function getStateData(startDate, endDate
 
 DataAggregator.prototype.getNationalData = function getNationalData(startDate, endDate, cb){
 	var self = this;
+
+	if(self.db==null){
+		return;
+	}
 
 	var collection = self.db.collection(self.collection);
 
@@ -117,6 +126,10 @@ DataAggregator.prototype.getNationalData = function getNationalData(startDate, e
 
 DataAggregator.prototype.getStateAverages = function getStateAverages(startDate, endDate, cb){
 	var self = this;
+
+	if(self.db==null){
+		return;
+	}
 
 	var collection = self.db.collection(self.collection);
 

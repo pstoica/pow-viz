@@ -121,7 +121,19 @@ var events = [
 ];
 
 //Testing
+
 // da.getStateData(new Date('2011'), new Date('2012'), 'GA', function(err, prices, stats){
+//   console.log(prices);
+// });
+
+// setTimeout(function(){
+//   console.log('set interval start');
+//   da.getStateData(new Date('2011'), new Date('2012'), 'GA', function(err, prices, stats){
+//     console.log(prices);
+//   });
+// }, 10000)
+
+// da.getNationalData(new Date('2011'), new Date('2012'), function(err, prices, stats){
 //   console.log(prices);
 // });
 
