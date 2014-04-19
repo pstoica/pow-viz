@@ -182,10 +182,17 @@ function colorMap() {
 }
 
 function trendChart() {
+  // TODO: should transition using D3
+  priceContainer.empty();
+
   var margin = {top: 20, right: 20, bottom: 30, left: 50},
       width = 850 - margin.left - margin.right,
       height = 200 - margin.top - margin.bottom,
-      trends;
+      trends,
+      prices,
+      filePath,
+      location = $("#location-menu").val(),
+      quality = $("#quality-menu").val();
 
   var parseDate = d3.time.format("%Y-%m-%dT%H:%M:%S.%LZ").parse;
 
@@ -199,11 +206,16 @@ function trendChart() {
   var yAxis = d3.svg.axis()
       .scale(y)
       .orient("left")
-      .ticks(5);
+      .ticks(10);
 
   var line = d3.svg.line()
     .x(function(d) { return x(d.date); })
     .y(function(d) { return y(d.val); });
+
+  var avgQuality = quality + "_avg";
+  var priceLine = d3.svg.line()
+    .x(function(d) { return x(d._id); })
+    .y(function(d) { return y(d.value.avgQuality); });
 
   var svg = d3.select(priceContainer[0]).append("svg")
       .attr("width", width + margin.left + margin.right)
@@ -211,17 +223,29 @@ function trendChart() {
     .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-  // just get US data for now
-  d3.json("/data/us.json", function(error, json) {
+  if (location == "US")
+    filePath = "/data/us.json";
+  else
+    filePath = "/data/states/" + location + ".json";
+
+  d3.json(filePath, function(error, json) {
     if (error) return console.warn(error);
-    
+
+    console.log(json);
+    prices = json.prices;
+    prices.forEach(function(d) {
+      d._id = parseDate(d._id);
+      d.value.avgQuality = +d.value.avgQuality;
+    });
+
+    // TODO: proportion trend values from 0-35
     trends = json.trends;
     trends.forEach(function(d) {
       d.date = parseDate(d.date);
       d.val = +d.val;
     });
 
-    x.domain(d3.extent(trends, function(d) { return d.date; }));
+    x.domain([new Date(2010, 8), new Date(2014, 3)]);
     y.domain([0,100]);
 
     svg.append("g")
@@ -239,9 +263,28 @@ function trendChart() {
         .text("Google Trends");
 
     svg.append("path")
-        .datum(trends)
+       .datum(trends)
         .attr("class", "line")
         .attr("d", line(trends));
+    svg.append("path")
+        .datum(prices)
+        .attr("class", "line")
+        .attr("d", priceLine(prices));
+
+    // svg.selectAll("line.horizontalGrid").data(y.ticks(10)).enter()
+    //   .append("line")
+    //     .attr(
+    //     {
+    //         "class":"horizontalGrid",
+    //         "x1" : margin.right,
+    //         "x2" : width,
+    //         "y1" : function(d){ return y(d);},
+    //         "y2" : function(d){ return y(d);},
+    //         "fill" : "none",
+    //         "shape-rendering" : "crispEdges",
+    //         "stroke" : "black",
+    //         "stroke-width" : ".5px"
+    //     });
   });
 }
 
@@ -258,11 +301,13 @@ var timeSlider = $("#time-slider"),
     timePlay = $("#time-play"),
     timeNext = $("#time-next"),
     currentDate = $("#current-date"),
+    locationMenu = $("#location-menu"),
     playInterval,
     isPlaying = false;
 
 timeSlider.on('change', updateTime);
 qualityMenu.on('change', colorMap);
+locationMenu.on('change', trendChart)
 
 timeBack.on('click', function() {
   timeSlider.val(parseInt(timeSlider.val()) - 1);

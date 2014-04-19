@@ -76,8 +76,10 @@ html(lang="en")
                 .form-group
                   label.control-label.col-sm-6 Location
                   .col-sm-6
-                    select.form-control
-                      option(value="GA") Georgia
+                    select.form-control#location-menu
+                      option(value="US") US
+                      each s in states
+                        option(value=s) #{s}
 
                 //-.form-group
                   label.control-label.col-sm-6 Date

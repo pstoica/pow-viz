@@ -10,6 +10,7 @@ var DataAggregator = require('./data_aggregator.js'),
     TrendLoader = require('./trend_loader.js'),
     tl = new TrendLoader();
 
+var states = ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY'];
 type = ['warning', 'danger', 'info', 'success']
 
 var events = [
@@ -148,7 +149,8 @@ app.get('/', function (req, res) {
       events: events,
       moment: moment,
       start_date: new Date(2010, 8),
-      end_date: new Date(2014, 3)
+      end_date: new Date(2014, 3),
+      states: states
     }
   );
 });
@@ -173,7 +175,8 @@ app.get('/data/us.json', function (req, res) {
     trends: { }
   }
 
-  da.getNationalData(start_date, end_date, function(err, priceResult, stats){
+  // always show full date range
+  da.getNationalData(new Date(2010, 8), new Date(2014, 3), function(err, priceResult, stats){
     result.prices = priceResult;
 
     tl.getTrendData('US', function(trendResult){
