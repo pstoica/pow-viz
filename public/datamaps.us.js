@@ -140,6 +140,10 @@
 
     if ( options.highlightOnHover || options.popupOnHover ) {
       svg.selectAll('.datamaps-subunit')
+        .on('click', function(d) {
+          console.log(d);
+          
+        })
         .on('mouseover', function(d) {
           var $this = d3.select(this);
 

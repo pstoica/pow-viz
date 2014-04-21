@@ -202,26 +202,39 @@ function trendChart() {
       .range([height, 0]);
   var xAxis = d3.svg.axis()
       .scale(x)
-      .orient("bottom");
+      .orient("bottom")
+      .ticks(d3.time.year, 1);
   var yAxis = d3.svg.axis()
       .scale(y)
       .orient("left")
-      .ticks(10);
+      .ticks(5);
 
   var line = d3.svg.line()
     .x(function(d) { return x(d.date); })
     .y(function(d) { return y(d.val); });
 
+  // getting error when switching qualities
   var avgQuality = quality + "_avg";
   var priceLine = d3.svg.line()
     .x(function(d) { return x(d._id); })
-    .y(function(d) { return y(d.value.avgQuality); });
+    .y(function(d) { return y(d.value[avgQuality]); });
 
   var svg = d3.select(priceContainer[0]).append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
     .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  // Draw Y-axis grid lines
+  svg.selectAll("line.y")
+    .data(y.ticks(10))
+    .enter().append("line")
+    .attr("class", "y")
+    .attr("x1", 0)
+    .attr("x2", width)
+    .attr("y1", y)
+    .attr("y2", y)
+    .style("stroke", "#ccc");
 
   if (location == "US")
     filePath = "/data/us.json";
@@ -231,60 +244,63 @@ function trendChart() {
   d3.json(filePath, function(error, json) {
     if (error) return console.warn(error);
 
-    console.log(json);
+    // console.log(json);
     prices = json.prices;
+    prices.sort(function (a, b) { return d3.ascending(a._id, b._id) });
     prices.forEach(function(d) {
       d._id = parseDate(d._id);
-      d.value.avgQuality = +d.value.avgQuality;
+      d.value[avgQuality] = +d.value[avgQuality];
     });
 
-    // TODO: proportion trend values from 0-35
     trends = json.trends;
     trends.forEach(function(d) {
       d.date = parseDate(d.date);
-      d.val = +d.val;
+      d.val = d.val / 7.0; // arbitrary proportioning
     });
 
-    x.domain([new Date(2010, 8), new Date(2014, 3)]);
-    y.domain([0,100]);
+    // TODO: x domain isn't containing trend data
+    // change domain based on available data
+    // if (prices[0]) {
+    //   x.domain(d3.extent(prices, function(d) { return d._id; }));
+    //   y.domain([0, 16]); //d3.max(prices, function(d) { return d.value[avgQuality]; })
+    // }
+    // else {
+      x.domain([new Date('2010'), d3.max(trends, function(d) { return d.date; })]);
+      y.domain([0, 16]); //d3.max(trends, function(d) { return d.val; })
+    // }
 
     svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + height + ")")
         .call(xAxis)
+      .append("text")
+        .attr("x", 20)
+        .attr("y", -130)
+        .attr("dy", ".75em")
+        .text("Demand")
+        .attr("fill", "steelblue");
 
     svg.append("g")
         .attr("class", "y axis")
         .call(yAxis)
       .append("text")
-        .attr("x", 50)
-        .attr("dy", ".71em")
-        .style("text-anchor", "center")
-        .text("Google Trends");
+        .attr("x", 20)
+        .attr("dy", ".75em")
+        .text("Price ($/g)")
+        .attr("fill", "red");
 
     svg.append("path")
-       .datum(trends)
+        .datum(trends)
         .attr("class", "line")
-        .attr("d", line(trends));
-    svg.append("path")
-        .datum(prices)
-        .attr("class", "line")
-        .attr("d", priceLine(prices));
+        .attr("d", line);
 
-    // svg.selectAll("line.horizontalGrid").data(y.ticks(10)).enter()
-    //   .append("line")
-    //     .attr(
-    //     {
-    //         "class":"horizontalGrid",
-    //         "x1" : margin.right,
-    //         "x2" : width,
-    //         "y1" : function(d){ return y(d);},
-    //         "y2" : function(d){ return y(d);},
-    //         "fill" : "none",
-    //         "shape-rendering" : "crispEdges",
-    //         "stroke" : "black",
-    //         "stroke-width" : ".5px"
-    //     });
+    if (prices[0]) {
+      svg.append("path")
+          .datum(prices)
+          .attr("class", "line")
+          .style("stroke", "red")
+          .attr("d", priceLine);
+    }
   });
 }
 
