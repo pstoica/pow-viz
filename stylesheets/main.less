@@ -10,6 +10,9 @@
 @state-success-bg: lighten(#CDBFE3, 5%);
 @state-success-text: @brand-success;
 
+@state-warning-bg: lighten(@brand-warning, 30%);
+@state-warning-text: darken(@brand-warning, 10%);
+
 .medical {
   color: @brand-danger;
 }
@@ -26,8 +29,9 @@
   color: @brand-success;
 }
 
-@color-scale-start: darken(@state-warning-bg, 0%);
-@color-scale-end:   darken(#dff0d8, 30%);
+//@color-scale-start: darken(@state-warning-bg, 10%);
+@color-scale-start: #F2E187;
+@color-scale-end:   darken(#dff0d8, 60%);
 
 .btn-price-1 {
   background-color: @color-scale-start;
@@ -47,6 +51,7 @@
 
 .btn-price-5 {
   background-color: @color-scale-end;
+  color: @color-scale-start;
 }
 
 .text-green {

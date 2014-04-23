@@ -157,7 +157,7 @@ function colorMap() {
 
     var color = d3.scale.linear()
       .domain([0, 35])
-      .range(["#FCF8E3", "#84C569"]);
+      .range(["#F2E187", "#529138"]);
 
     var choropleth = { };
 
