@@ -18,6 +18,7 @@
     "monk": "*",
     "less-middleware": "~0.1.15",
     "csv": "latest",
-    "moment": "^2.6.0"
+    "moment": "^2.6.0",
+    "memory-cache": "0.0.5"
   }
 }

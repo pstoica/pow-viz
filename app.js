@@ -3,7 +3,8 @@ var express = require('express'),
     lessMiddleware = require('less-middleware'),
     server, 
     db = require('monk')('localhost/pow'),
-    moment = require('moment');
+    moment = require('moment'),
+    cache = require('memory-cache');
 
 var DataAggregator = require('./data_aggregator.js'),
     da = new DataAggregator('mongodb://localhost/pow', 'weed_data'), //connectionURL, collection
@@ -170,20 +171,25 @@ app.get('/data/us.json', function (req, res) {
   var start_date = new Date('2010'),
       end_date = new Date('2015');
 
-  var result = {
-    prices: { },
-    trends: { }
-  }
+  if (result = cache.get('US')) {
+    res.send(result);
+  } else {
+    var result = {
+      prices: { },
+      trends: { }
+    }
 
-  // always show full date range
-  da.getNationalData(new Date(2010, 8), new Date(2014, 3), function(err, priceResult, stats){
-    result.prices = priceResult;
+    // always show full date range
+    da.getNationalData(new Date(2010, 8), new Date(2014, 3), function(err, priceResult, stats){
+      result.prices = priceResult;
 
-    tl.getTrendData(start_date, end_date, 'US', function(trendResult){
-      result.trends = trendResult;
-      res.send(result);
+      tl.getTrendData(start_date, end_date, 'US', function(trendResult){
+        result.trends = trendResult;
+        cache.put('US', result);
+        res.send(result);
+      });
     });
-  });
+  }
 });
 
 app.get('/data/states/:state.json', function (req, res) {
@@ -191,20 +197,26 @@ app.get('/data/states/:state.json', function (req, res) {
       end_date = new Date('2015'),
       state = req.params.state.toUpperCase();
 
-  var result = {
-    prices: { },
-    trends: { }
-  }
+  if (result = cache.get(state)) {
+    res.send(result);
+  } else {
+    var result = {
+      prices: { },
+      trends: { }
+    }
 
-  //state needs to be an all caps 2 letter state code
-  da.getStateData(start_date, end_date, state, function(err, priceResult, stats){
-    result.prices = priceResult;
+    //state needs to be an all caps 2 letter state code
+    da.getStateData(start_date, end_date, state, function(err, priceResult, stats){
+      result.prices = priceResult;
 
-    tl.getTrendData(start_date, end_date, state, function(trendResult){
-      result.trends = trendResult;
-      res.send(result);
+      tl.getTrendData(start_date, end_date, state, function(trendResult){
+        result.trends = trendResult;
+
+        cache.put(state, result);
+        res.send(result);
+      });
     });
-  });
+  }
 });
 
 // setting up middleware

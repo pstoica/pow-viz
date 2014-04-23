@@ -89,7 +89,6 @@ DataAggregator.prototype.getStateData = function getStateData(startDate, endDate
 			out: {inline:1}
 		},
 		function(err, data, stats){
-			console.log(data);
 			for(var i in data){
 				data[i]._id = new Date(data[i]._id);
 			}
