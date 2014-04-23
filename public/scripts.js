@@ -130,6 +130,11 @@ function drawMap() {
       'Medical Cannabis Laws': '#D9534F',
       'Both Medical and Decriminalization Laws': '#5BC0DE',
       'Legalized Cannabis': '#886AB5'
+    },
+    geographyConfig: {
+      highlightFillColor: 'rgba(91, 192, 222, 0.5)',
+      highlightBorderColor: 'rgba(91, 192, 222, 0.9)',
+      highlightBorderWidth: 2
     }
   });
 }
@@ -172,8 +177,6 @@ function colorMap() {
         choropleth[row._id] = color(row.value.mid_avg);
       } else if (quality == "low" && row.value.low_avg) {
         choropleth[row._id] = color(row.value.low_avg);
-      } else {
-        choropleth[row._id] = "#eeeeee";
       }
     });
 

@@ -187,9 +187,7 @@ app.get('/data/us.json', function (req, res) {
 });
 
 app.get('/data/states/:state.json', function (req, res) {
-  var start_date = new Date(req.query.start_date),
-      end_date = new Date(req.query.end_date),
-      state = req.params.state;
+  var state = req.params.state.toUpperCase();
 
   var result = {
     prices: { },
@@ -197,7 +195,7 @@ app.get('/data/states/:state.json', function (req, res) {
   }
 
   //state needs to be an all caps 2 letter state code
-  da.getStateData(start_date, end_date, state, function(err, priceResult, stats){
+  da.getStateData(new Date('2010'), new Date('2015'), state, function(err, priceResult, stats){
     result.prices = priceResult;
 
     tl.getTrendData(state, function(trendResult){

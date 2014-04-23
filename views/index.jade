@@ -1,7 +1,7 @@
 doctype html
 html(lang="en")
   head
-    title #{title}
+    title Price of Weed
     link(rel="stylesheet", href="/stylesheets/main.css")
   body
     .container-fluid
@@ -80,6 +80,11 @@ html(lang="en")
                       option(value="US") US
                       each s in states
                         option(value=s) #{s}
+                //-.form-group
+                  label.control-label.col-sm-6 Fill Empty Months
+                  .col-sm-6
+                    input#fillEmptyMonths(type="checkbox")
+                    small.help-block If a month lacks data for a state, keep the fill from the previous month.
 
                 //-.form-group
                   label.control-label.col-sm-6 Date
