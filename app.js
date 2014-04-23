@@ -162,9 +162,14 @@ app.get('/data/averages/:year/:month.json', function (req, res) {
       start_date = new Date(year, month),
       end_date = new Date(year, month + 1);
 
-  da.getStateAverages(start_date, end_date, function(err, prices, stats){
-    res.send(prices);
-  });
+  if (result = cache.get(start_date + " " + end_date)) {
+    res.send(result);
+  } else {
+    da.getStateAverages(start_date, end_date, function(err, prices, stats){
+      cache.put(start_date + " " + end_date, prices);
+      res.send(prices);
+    });
+  }
 });
 
 app.get('/data/us.json', function (req, res) {
