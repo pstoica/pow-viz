@@ -54,7 +54,7 @@ var events = [
     date: new Date(2011, 4, 13),
     state: 'DE', 
     fillKey: type[1],
-    description: 'May 13, 2011 - Delaware Becomes 16th State to Legalize Medical Marijuana',
+    description: 'Delaware Becomes 16th State to Legalize Medical Marijuana',
     specificDate: true,
     latitude: 38.891,
     longitude: -75.410,
@@ -63,7 +63,7 @@ var events = [
     date: new Date(2011, 6, 1),
     state: 'CT', 
     fillKey: type[0],
-    description: 'Gov. Dan Malloy signed legislation into law ‘decriminalizing’ the possession of small, personal use amounts of marijuana by adults',
+    description: 'Gov. Dan Malloy signed legislation into law ‘decriminalizing’ the possession of small, personal use amounts of marijuana by adults in Connecticut.',
     latitude: 41.67,
     longitude: -72.721,
     radius: radius
@@ -316,7 +316,7 @@ function trendChart() {
     // }
     // else {
       x.domain([new Date('2010'), d3.max(trends, function(d) { return d.date; })]);
-      y.domain([0, 16]); //d3.max(trends, function(d) { return d.val; })
+      y.domain([0, 35]); //d3.max(trends, function(d) { return d.val; })
     // }
 
     svg.append("g")

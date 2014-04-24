@@ -19,25 +19,38 @@ function map(){
 	var d = new Date(this.date);
 	var key = (d.getMonth()+1) + '/1/' + d.getFullYear();
 	var val = {
-		quality:this.quality,
-		ppg: this.ppg
+		low_avg: null,
+		mid_avg: null,
+		high_avg: null
 	};
+
+	var translateQuality = {
+		'low': 'low',
+		'medium': 'mid',
+		'high': 'high'
+	};
+
+	val[translateQuality[this.quality] + '_avg'] = this.ppg;
 	emit(key, val);
 }
 
 function reduce(key,vals){
-	var sums = {low:0, medium:0, high:0},
-		counts = {low:0, medium:0, high:0},
-		reducedVal = {low_avg:0, mid_avg:0, high_avg:0};
+	var reducedVal = {low_avg:[], mid_avg:[], high_avg:[]},
+		qualities = ['low', 'mid', 'high'];
 
-	for(var i=0; i<vals.length;i++){
-		sums[vals[i].quality]+=vals[i].ppg
-		counts[vals[i].quality]++;
-	}
+	vals.forEach(function(row) {
+		qualities.forEach(function(quality) {
+			var val = row[quality + '_avg'];
 
-	reducedVal['low_avg'] = sums['low']/counts['low'] || undefined;
-	reducedVal['mid_avg'] = sums['medium']/counts['medium'] || undefined;
-	reducedVal['high_avg'] = sums['high']/counts['high'] || undefined;
+			if (val !== null) {
+				reducedVal[quality + '_avg'].push(val);
+			}
+		});
+	});
+
+	qualities.forEach(function(quality) {
+		reducedVal[quality + '_avg'] = Array.sum(reducedVal[quality + '_avg']) / reducedVal[quality + '_avg'].length;
+	});
 
 	return reducedVal;
 }
@@ -54,16 +67,16 @@ function mapByState() {
 function reduceByState(key,vals) {
 	var sums = {low:0, medium:0, high:0},
 		counts = {low:0, medium:0, high:0},
-		reducedVal = {low_avg:0, mid_avg:0, high_avg:0};
+		reducedVal = {low_avg: null, mid_avg: null, high_avg: null};
 
 	for(var i=0; i<vals.length;i++){
-		sums[vals[i].quality]+=vals[i].ppg
+		sums[vals[i].quality]+=vals[i].ppg;
 		counts[vals[i].quality]++;
 	}
 
-	reducedVal['low_avg'] = sums['low']/counts['low'] || undefined;
-	reducedVal['mid_avg'] = sums['medium']/counts['medium'] || undefined;
-	reducedVal['high_avg'] = sums['high']/counts['high'] || undefined;
+	reducedVal['low_avg'] = sums['low']/counts['low'] || null;
+	reducedVal['mid_avg'] = sums['medium']/counts['medium'] || null;
+	reducedVal['high_avg'] = sums['high']/counts['high'] || null;
 
 	return reducedVal;
 }

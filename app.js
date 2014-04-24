@@ -54,7 +54,7 @@ var events = [
     date: new Date(2011, 4, 13),
     state: 'DE', 
     fillKey: type[1],
-    description: 'May 13, 2011 - Delaware Becomes 16th State to Legalize Medical Marijuana',
+    description: 'Delaware Becomes 16th State to Legalize Medical Marijuana',
     specificDate: true,
     latitude: 38.891,
     longitude: -75.410,
@@ -63,7 +63,7 @@ var events = [
     date: new Date(2011, 6, 1),
     state: 'CT', 
     fillKey: type[0],
-    description: 'Gov. Dan Malloy signed legislation into law ‘decriminalizing’ the possession of small, personal use amounts of marijuana by adults',
+    description: 'Gov. Dan Malloy signed legislation into law ‘decriminalizing’ the possession of small, personal use amounts of marijuana by adults in Connecticut.',
     latitude: 41.67,
     longitude: -72.721,
     radius: 5
@@ -89,7 +89,7 @@ var events = [
     date: new Date(2012, 11, 1),
     state: 'CO', 
     fillKey: type[3],
-    description: ' Fifty-five percent of Colorado voters approved Amendment 64, which legalizes the adult personal use of cannabis',
+    description: 'Fifty-five percent of Colorado voters approved Amendment 64, which legalizes the adult personal use of cannabis.',
     latitude: 39.095,
     longitude: -105.776,
     radius: 5
@@ -97,7 +97,7 @@ var events = [
     date: new Date(2012, 11, 1),
     state: 'WA', 
     fillKey: type[3],
-    description: 'Fifty-six percent of voters approved Initiative 502, permitting an adult to possess up to one-ounce of cannabis for their own personal use in private',
+    description: 'In Washington, fifty-six percent of voters approved Initiative 502, permitting an adult to possess up to one-ounce of cannabis for their own personal use in private.',
     latitude: 47.338,
     longitude: -120.014,
     radius: 5
@@ -186,7 +186,9 @@ app.get('/data/us.json', function (req, res) {
 
     // always show full date range
     da.getNationalData(new Date(2010, 8), new Date(2014, 3), function(err, priceResult, stats){
-      result.prices = priceResult;
+      result.prices = priceResult.sort(function(a, b) {
+        return new Date(b._id) - new Date(a._id);
+      });
 
       tl.getTrendData(start_date, end_date, 'US', function(trendResult){
         result.trends = trendResult;
@@ -212,7 +214,9 @@ app.get('/data/states/:state.json', function (req, res) {
 
     //state needs to be an all caps 2 letter state code
     da.getStateData(start_date, end_date, state, function(err, priceResult, stats){
-      result.prices = priceResult;
+      result.prices = priceResult;/*.sort(function(a, b) {
+        return new Date(a._id) - new Date(b._id);
+      });*/
 
       tl.getTrendData(start_date, end_date, state, function(trendResult){
         result.trends = trendResult;
