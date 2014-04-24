@@ -178,8 +178,8 @@ function drawMap() {
 }
 
 function drawEvents() {
-  var curr_date = new Date(start_year, start_month + parseInt(timeSlider.val()));
-  curr_events = events.filter(function(e) { if (e.date <= curr_date) return e });
+  var curr_date = new Date(start_year, start_month + parseInt(timeSlider.val()) + 1);
+  curr_events = events.filter(function(e) { if (e.date < curr_date) return e });
 
   // bubbles for key events based on current year
   map.bubbles(curr_events, {
@@ -188,7 +188,26 @@ function drawEvents() {
     fillOpacity: 1,
     popupOnHover: true,
     popupTemplate: function(geography, data) {
-      console.log(data);
+      var time,
+          result;
+
+      result = '<div class="hoverinfo"><span class="lead">';
+
+      if (data.specificDate) {
+        time = moment(data.date).format("MMMM Do, YYYY");
+      } else {
+        time = moment(data.date).format('MMMM YYYY');
+      }
+
+      result += time + '</span><br>';
+
+      if (data.description) {
+        result += data.description;
+      }
+
+      result += '</div>';
+
+      return result;
     },
     //highlightOnHover: false,
     highlightBorderColor: '#555555',

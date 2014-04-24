@@ -20,14 +20,14 @@ html(lang="en")
                   if e.date >= start_date
                     a.list-group-item.timeline-event(data-time="#{moment(e.date).date(1).diff(moment(start_date), 'months', true)}", href="javascript:0", class="list-group-item-#{e.fillKey}")
                       if e.specificDate
-                        h4.list-group-item-heading #{moment(e.date).format("MMMM Do YYYY")}
+                        h4.list-group-item-heading #{moment(e.date).format("MMMM Do, YYYY")}
                       else
                         h4.list-group-item-heading #{moment(e.date).format("MMMM YYYY")}
                       p.list-group-item-text #{e.description}
                   else
                     .list-group-item.timeline-event(class="list-group-item-#{e.fillKey}")
                       if e.specificDate
-                        h4.list-group-item-heading #{moment(e.date).format("MMMM Do YYYY")}
+                        h4.list-group-item-heading #{moment(e.date).format("MMMM Do, YYYY")}
                       else
                         h4.list-group-item-heading #{moment(e.date).format("MMMM YYYY")}
                       p.list-group-item-text #{e.description}
@@ -102,7 +102,7 @@ html(lang="en")
 
           .col-sm-4.col-sm-offset-4
             select.form-control#location-menu
-              option(value="US") US
+              option(value="US") United States
               each state, abbr in states
                 option(value=abbr) #{state}
 
