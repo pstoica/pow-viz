@@ -261,12 +261,10 @@ function trendChart() {
       width = 550 - margin.left - margin.right,
       height = 200 - margin.top - margin.bottom,
       trends,
-      prices,
+      prices = [],
       filePath,
       location = $("#location-menu").val(),
       quality = $("#quality-menu").val();
-
-  var parseDate = d3.time.format("%Y-%m-%dT%H:%M:%S.%LZ").parse;
 
   var x = d3.time.scale()
       .range([0, width]);
@@ -318,29 +316,41 @@ function trendChart() {
     if (error) return console.warn(error);
 
     // console.log(json);
-    prices = json.prices;
+
+    var maxDate = d3.max(json.prices, function(d) { return new Date(d._id); }),
+        currentMonth = start_month,
+        currentDate = new Date(start_year, start_month);
+
+    while (currentDate <= maxDate) {
+      prices.push({
+        _id: currentDate,
+        value: {
+          low_avg: null,
+          mid_avg: null,
+          high_avg: null
+        }
+      });
+
+      currentMonth++;
+      currentDate = new Date(start_year, currentMonth);
+    }
+
+    prices = $.merge(prices, json.prices);
+
     prices.sort(function (a, b) { return d3.ascending(a._id, b._id) });
     prices.forEach(function(d) {
-      d._id = parseDate(d._id);
+      d._id = new Date(d._id);
       //d.value[avgQuality] = +d.value[avgQuality];
     });
 
     trends = json.trends;
     trends.forEach(function(d) {
-      d.date = parseDate(d.date);
+      d.date = new Date(d.date);
       d.val = d.val / 7.0; // arbitrary proportioning
     });
 
-    // TODO: x domain isn't containing trend data
-    // change domain based on available data
-    // if (prices[0]) {
-    //   x.domain(d3.extent(prices, function(d) { return d._id; }));
-    //   y.domain([0, 16]); //d3.max(prices, function(d) { return d.value[avgQuality]; })
-    // }
-    // else {
-      x.domain([new Date('2010'), d3.max(trends, function(d) { return d.date; })]);
-      y.domain([0, maxAverage]); //d3.max(trends, function(d) { return d.val; })
-    // }
+    x.domain([new Date('2010'), d3.max(trends, function(d) { return d.date; })]);
+    y.domain([0, maxAverage]);
 
     svg.append("g")
         .attr("class", "x axis")
