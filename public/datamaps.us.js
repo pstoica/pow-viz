@@ -141,7 +141,8 @@
     if ( options.highlightOnHover || options.popupOnHover ) {
       svg.selectAll('.datamaps-subunit')
         .on('click', function(d) {
-          console.log(d);
+          $("#location-menu").val(d.id);
+          trendChart();
           
         })
         .on('mouseover', function(d) {
