@@ -218,7 +218,7 @@ function colorMap() {
     $.each(json, function(i, row) {
       if (quality == "high" && row.value.high_avg) {
         choropleth[row._id] = color(row.value.high_avg);
-      } else if (quality == "medium" && row.value.mid_avg) {
+      } else if (quality == "mid" && row.value.mid_avg) {
         choropleth[row._id] = color(row.value.mid_avg);
       } else if (quality == "low" && row.value.low_avg) {
         choropleth[row._id] = color(row.value.low_avg);
@@ -266,8 +266,9 @@ function trendChart() {
   // getting error when switching qualities
   var avgQuality = quality + "_avg";
   var priceLine = d3.svg.line()
+    .defined(function(d) { return d.value[avgQuality] != null; })
     .x(function(d) { return x(d._id); })
-    .y(function(d) { return y(d.value[avgQuality]); });
+    .y(function(d) { console.log(d); return y(d.value[avgQuality]); });
 
   var svg = d3.select(priceContainer[0]).append("svg")
       .attr("width", width + margin.left + margin.right)
@@ -299,7 +300,7 @@ function trendChart() {
     prices.sort(function (a, b) { return d3.ascending(a._id, b._id) });
     prices.forEach(function(d) {
       d._id = parseDate(d._id);
-      d.value[avgQuality] = +d.value[avgQuality];
+      //d.value[avgQuality] = +d.value[avgQuality];
     });
 
     trends = json.trends;
@@ -372,7 +373,10 @@ var timeSlider = $("#time-slider"),
     isPlaying = false;
 
 timeSlider.on('change', updateTime);
-qualityMenu.on('change', colorMap);
+qualityMenu.on('change', function() {
+  colorMap();
+  trendChart();
+});
 locationMenu.on('change', trendChart)
 
 timeBack.on('click', function() {

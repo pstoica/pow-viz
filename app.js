@@ -186,9 +186,7 @@ app.get('/data/us.json', function (req, res) {
 
     // always show full date range
     da.getNationalData(new Date(2010, 8), new Date(2014, 3), function(err, priceResult, stats){
-      result.prices = priceResult.sort(function(a, b) {
-        return new Date(b._id) - new Date(a._id);
-      });
+      result.prices = priceResult;
 
       tl.getTrendData(start_date, end_date, 'US', function(trendResult){
         result.trends = trendResult;
@@ -214,9 +212,7 @@ app.get('/data/states/:state.json', function (req, res) {
 
     //state needs to be an all caps 2 letter state code
     da.getStateData(start_date, end_date, state, function(err, priceResult, stats){
-      result.prices = priceResult;/*.sort(function(a, b) {
-        return new Date(a._id) - new Date(b._id);
-      });*/
+      result.prices = priceResult;
 
       tl.getTrendData(start_date, end_date, state, function(trendResult){
         result.trends = trendResult;

@@ -58,9 +58,18 @@ function reduce(key,vals){
 function mapByState() {
 	var key = this.state;
 	var val = {
-		quality:this.quality,
-		ppg: this.ppg
+		low_avg: null,
+		mid_avg: null,
+		high_avg: null
 	};
+
+	var translateQuality = {
+		'low': 'low',
+		'medium': 'mid',
+		'high': 'high'
+	};
+
+	val[translateQuality[this.quality] + '_avg'] = this.ppg;
 	emit(key, val);
 }
 
@@ -148,7 +157,7 @@ DataAggregator.prototype.getStateAverages = function getStateAverages(startDate,
 
 	collection.mapReduce(
 		mapByState,
-		reduceByState,
+		reduce,
 		{
 			query: {
 				date:{$gte: startDate, $lt:endDate}
