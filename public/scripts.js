@@ -432,6 +432,20 @@ timelineEvents.on('click', function(e) {
   }
 });
 
+timelineEvents.on('mouseenter', function(e) {
+  var state = $(this).data('state');
+
+  console.log($('.' + state).first()[0].classList);
+
+  $('.' + state).first()[0].classList.add('active-state');
+});
+
+timelineEvents.on('mouseleave', function(e) {
+  var state = $(this).data('state');
+
+  $('.' + state).first()[0].classList.remove('active-state');
+});
+
 timeNext.on('click', nextTime);
 
 function nextTime() {

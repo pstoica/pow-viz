@@ -18,14 +18,14 @@ html(lang="en")
               .list-group#timeline.scrollable
                 each e in events
                   if e.date >= start_date
-                    a.list-group-item.timeline-event(data-time="#{moment(e.date).date(1).diff(moment(start_date), 'months', true)}", href="javascript:0", class="list-group-item-#{e.fillKey}")
+                    a.list-group-item.timeline-event(data-state="#{e.state}", data-time="#{moment(e.date).date(1).diff(moment(start_date), 'months', true)}", href="javascript:0", class="list-group-item-#{e.fillKey}")
                       if e.specificDate
                         h4.list-group-item-heading #{moment(e.date).format("MMMM Do, YYYY")}
                       else
                         h4.list-group-item-heading #{moment(e.date).format("MMMM YYYY")}
                       p.list-group-item-text #{e.description}
                   else
-                    .list-group-item.timeline-event(class="list-group-item-#{e.fillKey}")
+                    .list-group-item.timeline-event(data-state="#{e.state}", class="list-group-item-#{e.fillKey}")
                       if e.specificDate
                         h4.list-group-item-heading #{moment(e.date).format("MMMM Do, YYYY")}
                       else
