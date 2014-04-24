@@ -4,29 +4,34 @@ var mapContainer = $("#map"),
     start_month = 8,
     priceContainer = $("#price-chart");
 
-var states = ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY'];
+var states = { "AL": "Alabama", "AK": "Alaska", "AS": "American Samoa", "AZ": "Arizona", "AR": "Arkansas", "CA": "California", "CO": "Colorado", "CT": "Connecticut", "DE": "Delaware", "DC": "District Of Columbia", "FM": "Federated States Of Micronesia", "FL": "Florida", "GA": "Georgia", "GU": "Guam", "HI": "Hawaii", "ID": "Idaho", "IL": "Illinois", "IN": "Indiana", "IA": "Iowa", "KS": "Kansas", "KY": "Kentucky", "LA": "Louisiana", "ME": "Maine", "MH": "Marshall Islands", "MD": "Maryland", "MA": "Massachusetts", "MI": "Michigan", "MN": "Minnesota", "MS": "Mississippi", "MO": "Missouri", "MT": "Montana", "NE": "Nebraska", "NV": "Nevada", "NH": "New Hampshire", "NJ": "New Jersey", "NM": "New Mexico", "NY": "New York", "NC": "North Carolina", "ND": "North Dakota", "MP": "Northern Mariana Islands", "OH": "Ohio", "OK": "Oklahoma", "OR": "Oregon", "PW": "Palau", "PA": "Pennsylvania", "PR": "Puerto Rico", "RI": "Rhode Island", "SC": "South Carolina", "SD": "South Dakota", "TN": "Tennessee", "TX": "Texas", "UT": "Utah", "VT": "Vermont", "VI": "Virgin Islands", "VA": "Virginia", "WA": "Washington", "WV": "West Virginia", "WI": "Wisconsin", "WY": "Wyoming"
+}
 // event info
 var type = ['Decriminalization Laws', 'Medical Cannabis Laws', 
             'Both Medical and Decriminalization Laws', 'Legalized Cannabis'];
 
+var currentAverages;
+
+var radius = 10;
+
 var curr_events;
 var events = [
      // events that happened before 2010
-     { date: new Date(2000, 1, 1), state: 'ME',  fillKey: type[2], description: 'It removes state-level criminal penalties on the use, possession and cultivation of marijuana by patients who possess an oral or written "professional opinion" from their physician that he or she "might benefit from the medical use of marijuana"', latitude: 45.167, longitude: -69.051, radius: 5
-  }, { date: new Date(2000, 1, 1), state: 'CA',  fillKey: type[2], description: '', latitude: 36.93, longitude: -119.86, radius: 5
-  }, { date: new Date(2000, 1, 1), state: 'NV',  fillKey: type[2], description: '', latitude: 39.89, longitude: -116.87, radius: 5
-  }, { date: new Date(2000, 1, 1), state: 'OR',  fillKey: type[2], description: '', latitude: 43.967, longitude: -120.591, radius: 5
-  }, { date: new Date(2000, 1, 1), state: 'NM',  fillKey: type[1], description: '', latitude: 34.61, longitude: -105.98, radius: 5
-  }, { date: new Date(2000, 1, 1), state: 'MT',  fillKey: type[1], description: '', latitude: 46.99, longitude: -109.89, radius: 5
-  }, { date: new Date(2000, 1, 1), state: 'NE',  fillKey: type[0], description: '', latitude: 41.39, longitude: -99.52, radius: 5
-  }, { date: new Date(2000, 1, 1), state: 'MN',  fillKey: type[0], description: '', latitude: 46.12, longitude: -94.64, radius: 5
-  }, { date: new Date(2000, 1, 1), state: 'AK',  fillKey: type[2], description: '', latitude: 65.62, longitude: -150.14, radius: 5
-  }, { date: new Date(2000, 1, 1), state: 'HI',  fillKey: type[1], description: '', latitude: 21.02, longitude: -157.08, radius: 5
-  }, { date: new Date(2000, 1, 1), state: 'MI',  fillKey: type[0], description: '', latitude: 32.82, longitude: -89.74, radius: 5
-  }, { date: new Date(2000, 1, 1), state: 'NY',  fillKey: type[0], description: '', latitude: 43.17, longitude: -75.74, radius: 5
-  }, { date: new Date(2000, 1, 1), state: 'MI',  fillKey: type[1], description: '', latitude: 43.30, longitude: -84.49, radius: 5
-  }, { date: new Date(2000, 1, 1), state: 'NC',  fillKey: type[0], description: '', latitude: 35.88, longitude: -79.09, radius: 5
-  }, { date: new Date(2000, 1, 1), state: 'OH',  fillKey: type[0], description: '', latitude: 40.41, longitude: -82.75, radius: 5
+     { date: new Date(2000, 1, 1), state: 'ME',  fillKey: type[2], description: 'It removes state-level criminal penalties on the use, possession and cultivation of marijuana by patients who possess an oral or written "professional opinion" from their physician that he or she "might benefit from the medical use of marijuana"', latitude: 45.167, longitude: -69.051, radius: radius
+  }, { date: new Date(2000, 1, 1), state: 'CA',  fillKey: type[2], description: '', latitude: 36.93, longitude: -119.86, radius: radius
+  }, { date: new Date(2000, 1, 1), state: 'NV',  fillKey: type[2], description: '', latitude: 39.89, longitude: -116.87, radius: radius
+  }, { date: new Date(2000, 1, 1), state: 'OR',  fillKey: type[2], description: '', latitude: 43.967, longitude: -120.591, radius: radius
+  }, { date: new Date(2000, 1, 1), state: 'NM',  fillKey: type[1], description: '', latitude: 34.61, longitude: -105.98, radius: radius
+  }, { date: new Date(2000, 1, 1), state: 'MT',  fillKey: type[1], description: '', latitude: 46.99, longitude: -109.89, radius: radius
+  }, { date: new Date(2000, 1, 1), state: 'NE',  fillKey: type[0], description: '', latitude: 41.39, longitude: -99.52, radius: radius
+  }, { date: new Date(2000, 1, 1), state: 'MN',  fillKey: type[0], description: '', latitude: 46.12, longitude: -94.64, radius: radius
+  }, { date: new Date(2000, 1, 1), state: 'AK',  fillKey: type[2], description: '', latitude: 65.62, longitude: -150.14, radius: radius
+  }, { date: new Date(2000, 1, 1), state: 'HI',  fillKey: type[1], description: '', latitude: 21.02, longitude: -157.08, radius: radius
+  }, { date: new Date(2000, 1, 1), state: 'MI',  fillKey: type[0], description: '', latitude: 32.82, longitude: -89.74, radius: radius
+  }, { date: new Date(2000, 1, 1), state: 'NY',  fillKey: type[0], description: '', latitude: 43.17, longitude: -75.74, radius: radius
+  }, { date: new Date(2000, 1, 1), state: 'MI',  fillKey: type[1], description: '', latitude: 43.30, longitude: -84.49, radius: radius
+  }, { date: new Date(2000, 1, 1), state: 'NC',  fillKey: type[0], description: '', latitude: 35.88, longitude: -79.09, radius: radius
+  }, { date: new Date(2000, 1, 1), state: 'OH',  fillKey: type[0], description: '', latitude: 40.41, longitude: -82.75, radius: radius
   }, {
     date: new Date(2010, 0, 11),
     state: 'NJ', 
@@ -35,7 +40,7 @@ var events = [
     specificDate: true,
     latitude: 39.367,
     longitude: -74.751,
-    radius: 5
+    radius: radius
   }, {
     date: new Date(2010, 10, 2),
     state: 'AZ', 
@@ -44,7 +49,7 @@ var events = [
     specificDate: true,
     latitude: 34.251,
     longitude: -111.785,
-    radius: 5 
+    radius: radius 
   }, {
     date: new Date(2011, 4, 13),
     state: 'DE', 
@@ -53,7 +58,7 @@ var events = [
     specificDate: true,
     latitude: 38.891,
     longitude: -75.410,
-    radius: 5
+    radius: radius
   }, {
     date: new Date(2011, 6, 1),
     state: 'CT', 
@@ -61,7 +66,7 @@ var events = [
     description: 'Gov. Dan Malloy signed legislation into law ‘decriminalizing’ the possession of small, personal use amounts of marijuana by adults',
     latitude: 41.67,
     longitude: -72.721,
-    radius: 5
+    radius: radius
   }, {
     date: new Date(2012, 4, 31),
     state: 'CT', 
@@ -70,7 +75,7 @@ var events = [
     specificDate: true,
     latitude: 41.67,
     longitude: -72.721,
-    radius: 5
+    radius: radius
   }, {
     date: new Date(2012, 10, 6),
     state: 'MA', 
@@ -79,7 +84,7 @@ var events = [
     specificDate: true,
     latitude: 42.407,
     longitude: -72.465,
-    radius: 5
+    radius: radius
   }, {
     date: new Date(2012, 11, 1),
     state: 'CO', 
@@ -87,7 +92,7 @@ var events = [
     description: ' Fifty-five percent of Colorado voters approved Amendment 64, which legalizes the adult personal use of cannabis',
     latitude: 39.095,
     longitude: -105.776,
-    radius: 5
+    radius: radius
   }, {
     date: new Date(2012, 11, 1),
     state: 'WA', 
@@ -95,7 +100,7 @@ var events = [
     description: 'Fifty-six percent of voters approved Initiative 502, permitting an adult to possess up to one-ounce of cannabis for their own personal use in private',
     latitude: 47.338,
     longitude: -120.014,
-    radius: 5
+    radius: radius
   }, {
     date: new Date(2013, 6, 1),
     state: 'NH', 
@@ -104,7 +109,7 @@ var events = [
     specificDate: true,
     latitude: 43.357,
     longitude: -71.589,
-    radius: 5
+    radius: radius
   }, {
     date: new Date(2013, 7, 1),
     state: 'IL', 
@@ -113,7 +118,7 @@ var events = [
     specificDate: true,
     latitude: 40.245,
     longitude: -89.472,
-    radius: 5
+    radius: radius
   }
 ];
 
@@ -134,7 +139,40 @@ function drawMap() {
     geographyConfig: {
       highlightFillColor: 'rgba(91, 192, 222, 0.5)',
       highlightBorderColor: 'rgba(91, 192, 222, 0.9)',
-      highlightBorderWidth: 2
+      highlightBorderWidth: 2,
+      popupTemplate: function(geography, data) {
+        var result, stateData;
+
+        result = '<div class="hoverinfo"><span class="lead">' + geography.properties.name + "</span><br/>";
+
+        if (geography.properties.name == "Alaska" || geography.properties.name == "Hawaii") {
+          result += 'Data unavailable for this state.</div>';
+
+          return result;
+        }
+
+        if (currentAverages) {
+          // super inefficient, but whatever
+          stateData = $.grep(currentAverages, function(e){
+            return states[e._id] === geography.properties.name;
+          })[0].value;
+
+          if (stateData.low_avg) {
+            result += "<strong>Low</strong>";
+            result += " $" + stateData.low_avg.toFixed(2) + "<br>";
+          }
+          if (stateData.mid_avg) {
+            result += "<strong>Medium</strong>";
+            result += " $" + stateData.mid_avg.toFixed(2) + "<br>";
+          }
+          if (stateData.high_avg) {
+            result += "<strong>High</strong>";
+            result += " $" + stateData.high_avg.toFixed(2) + "<br>";
+          }
+        }
+        result += "</div>";
+        return result;
+      }
     }
   });
 }
@@ -145,9 +183,14 @@ function drawEvents() {
 
   // bubbles for key events based on current year
   map.bubbles(curr_events, {
-    borderWidth: 0,
+    borderWidth: 2,
+    borderColor: '#ffffff',
     fillOpacity: 1,
+    popupOnHover: false,
     //highlightOnHover: false,
+    highlightBorderColor: '#555555',
+    highlightBorderWidth: 2
+
   });
 }
 
@@ -156,6 +199,8 @@ function colorMap() {
       year = date.getFullYear(),
       month = date.getMonth() + 1,
       quality = $("#quality-menu").val();
+
+  currentAverages = null;
 
   d3.json("/data/averages/" + year + "/" + month + ".json", function(error, json) {
     if (error) return console.warn(error);
@@ -166,7 +211,7 @@ function colorMap() {
 
     var choropleth = { };
 
-    $.each(states, function(i, state) {
+    $.each(states, function(state, stateName) {
       choropleth[state] = "#eeeeee";
     });
 
@@ -179,6 +224,8 @@ function colorMap() {
         choropleth[row._id] = color(row.value.low_avg);
       }
     });
+
+    currentAverages = json;
 
     map.updateChoropleth(choropleth);
   });

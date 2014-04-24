@@ -393,7 +393,7 @@
             };
 
             $this
-              .style('fill', options.highlightFillColor)
+              //.style('fill', options.highlightFillColor)
               .style('stroke', options.highlightBorderColor)
               .style('stroke-width', options.highlightBorderWidth)
               .style('fill-opacity', options.highlightFillOpacity)
