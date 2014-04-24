@@ -4,17 +4,17 @@ var mapContainer = $("#map"),
     start_month = 8,
     priceContainer = $("#price-chart");
 
-var states = { "AL": "Alabama", "AK": "Alaska", "AS": "American Samoa", "AZ": "Arizona", "AR": "Arkansas", "CA": "California", "CO": "Colorado", "CT": "Connecticut", "DE": "Delaware", "DC": "District Of Columbia", "FM": "Federated States Of Micronesia", "FL": "Florida", "GA": "Georgia", "GU": "Guam", "HI": "Hawaii", "ID": "Idaho", "IL": "Illinois", "IN": "Indiana", "IA": "Iowa", "KS": "Kansas", "KY": "Kentucky", "LA": "Louisiana", "ME": "Maine", "MH": "Marshall Islands", "MD": "Maryland", "MA": "Massachusetts", "MI": "Michigan", "MN": "Minnesota", "MS": "Mississippi", "MO": "Missouri", "MT": "Montana", "NE": "Nebraska", "NV": "Nevada", "NH": "New Hampshire", "NJ": "New Jersey", "NM": "New Mexico", "NY": "New York", "NC": "North Carolina", "ND": "North Dakota", "MP": "Northern Mariana Islands", "OH": "Ohio", "OK": "Oklahoma", "OR": "Oregon", "PW": "Palau", "PA": "Pennsylvania", "PR": "Puerto Rico", "RI": "Rhode Island", "SC": "South Carolina", "SD": "South Dakota", "TN": "Tennessee", "TX": "Texas", "UT": "Utah", "VT": "Vermont", "VI": "Virgin Islands", "VA": "Virginia", "WA": "Washington", "WV": "West Virginia", "WI": "Wisconsin", "WY": "Wyoming"
-}
+var states = { "AL": "Alabama", "AK": "Alaska", "AZ": "Arizona", "AR": "Arkansas", "CA": "California", "CO": "Colorado", "CT": "Connecticut", "DE": "Delaware", "DC": "District Of Columbia", "FL": "Florida", "GA": "Georgia", "HI": "Hawaii", "ID": "Idaho", "IL": "Illinois", "IN": "Indiana", "IA": "Iowa", "KS": "Kansas", "KY": "Kentucky", "LA": "Louisiana", "ME": "Maine", "MD": "Maryland", "MA": "Massachusetts", "MI": "Michigan", "MN": "Minnesota", "MS": "Mississippi", "MO": "Missouri", "MT": "Montana", "NE": "Nebraska", "NV": "Nevada", "NH": "New Hampshire", "NJ": "New Jersey", "NM": "New Mexico", "NY": "New York", "NC": "North Carolina", "ND": "North Dakota", "OH": "Ohio", "OK": "Oklahoma", "OR": "Oregon", "PA": "Pennsylvania", "RI": "Rhode Island", "SC": "South Carolina", "SD": "South Dakota", "TN": "Tennessee", "TX": "Texas", "UT": "Utah", "VT": "Vermont", "VI": "Virgin Islands", "VA": "Virginia", "WA": "Washington", "WV": "West Virginia", "WI": "Wisconsin", "WY": "Wyoming"
+};
 // event info
 var type = ['Decriminalization Laws', 'Medical Cannabis Laws', 
             'Both Medical and Decriminalization Laws', 'Legalized Cannabis'];
 
-var currentAverages;
+var currentAverages,
+    maxAverage = 25,
+    radius = 10,
+    curr_events;
 
-var radius = 10;
-
-var curr_events;
 var events = [
      // events that happened before 2010
      { date: new Date(2000, 1, 1), state: 'ME',  fillKey: type[2], description: 'It removes state-level criminal penalties on the use, possession and cultivation of marijuana by patients who possess an oral or written "professional opinion" from their physician that he or she "might benefit from the medical use of marijuana"', latitude: 45.167, longitude: -69.051, radius: radius
@@ -186,7 +186,10 @@ function drawEvents() {
     borderWidth: 2,
     borderColor: '#ffffff',
     fillOpacity: 1,
-    popupOnHover: false,
+    popupOnHover: true,
+    popupTemplate: function(geography, data) {
+      console.log(data);
+    },
     //highlightOnHover: false,
     highlightBorderColor: '#555555',
     highlightBorderWidth: 2
@@ -206,7 +209,7 @@ function colorMap() {
     if (error) return console.warn(error);
 
     var color = d3.scale.linear()
-      .domain([0, 35])
+      .domain([0, maxAverage])
       .range(["#F2E187", "#529138"]);
 
     var choropleth = { };
@@ -236,7 +239,7 @@ function trendChart() {
   priceContainer.empty();
 
   var margin = {top: 20, right: 20, bottom: 30, left: 50},
-      width = 850 - margin.left - margin.right,
+      width = 550 - margin.left - margin.right,
       height = 200 - margin.top - margin.bottom,
       trends,
       prices,
@@ -268,7 +271,7 @@ function trendChart() {
   var priceLine = d3.svg.line()
     .defined(function(d) { return d.value[avgQuality] != null; })
     .x(function(d) { return x(d._id); })
-    .y(function(d) { console.log(d); return y(d.value[avgQuality]); });
+    .y(function(d) { return y(d.value[avgQuality]); });
 
   var svg = d3.select(priceContainer[0]).append("svg")
       .attr("width", width + margin.left + margin.right)
@@ -317,7 +320,7 @@ function trendChart() {
     // }
     // else {
       x.domain([new Date('2010'), d3.max(trends, function(d) { return d.date; })]);
-      y.domain([0, 35]); //d3.max(trends, function(d) { return d.val; })
+      y.domain([0, maxAverage]); //d3.max(trends, function(d) { return d.val; })
     // }
 
     svg.append("g")
@@ -369,6 +372,7 @@ var timeSlider = $("#time-slider"),
     timeNext = $("#time-next"),
     currentDate = $("#current-date"),
     locationMenu = $("#location-menu"),
+    timelineEvents = $(".timeline-event"),
     playInterval,
     isPlaying = false;
 
@@ -399,6 +403,15 @@ timePlay.on('click', function() {
     playInterval = setInterval(nextTime, 1000);
   }
 })
+
+timelineEvents.on('click', function(e) {
+  var time = $(this).data('time');
+
+  if (time) {
+    timeSlider.val(time);
+    updateTime();
+  }
+});
 
 timeNext.on('click', nextTime);
 

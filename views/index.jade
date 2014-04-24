@@ -17,30 +17,20 @@ html(lang="en")
             .col-sm-7
               .list-group#timeline.scrollable
                 each e in events
-                  a.list-group-item(href="#", class="list-group-item-#{e.fillKey}")
-                    if e.specificDate
-                      h4.list-group-item-heading #{moment(e.date).format("MMMM Do YYYY")}
-                    else
-                      h4.list-group-item-heading #{moment(e.date).format("MMMM YYYY")}
-                    p.list-group-item-text #{e.description}
-              //-div.list-group.timeline
-                a(href="#").list-group-item.list-group-item-info
-                  h4.list-group-item-heading January 2009
-                  p.list-group-item-text Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt.
-                a(href="#").list-group-item.list-group-item-danger
-                  h4.list-group-item-heading February 2010
-                  p.list-group-item-text Jersey legislature approves medical cannabis. Governor Corzine signed the bill into law on January 18. Arizona's proposition 203, also called "Arizona Medical Marijuana Act", passes.
-                a(href="#").list-group-item
-                  h4.list-group-item-heading March 2011
-                  p.list-group-item-text Gallup reports record 50% of Americans support legalization.
-                a(href="#").list-group-item.list-group-item-danger
-                  h4.list-group-item-heading April 2012
-                  p.list-group-item-text
-                    | Massachusetts voters passed the Massachusetts Medical Marijuana Initiative with 63% support, legalizing the use of medical marijuana. Massachusetts was the 18th state to legalize the medical use of marijuana.
-                a(href="#").list-group-item.list-group-item-success
-                  h4.list-group-item-heading May 2012
-                  p.list-group-item-text
-                    | Ballot initiatives make Washington and Colorado the first states to legalize recreation use.
+                  if e.date >= start_date
+                    a.list-group-item.timeline-event(data-time="#{moment(e.date).date(1).diff(moment(start_date), 'months', true)}", href="javascript:0", class="list-group-item-#{e.fillKey}")
+                      if e.specificDate
+                        h4.list-group-item-heading #{moment(e.date).format("MMMM Do YYYY")}
+                      else
+                        h4.list-group-item-heading #{moment(e.date).format("MMMM YYYY")}
+                      p.list-group-item-text #{e.description}
+                  else
+                    .list-group-item.timeline-event(class="list-group-item-#{e.fillKey}")
+                      if e.specificDate
+                        h4.list-group-item-heading #{moment(e.date).format("MMMM Do YYYY")}
+                      else
+                        h4.list-group-item-heading #{moment(e.date).format("MMMM YYYY")}
+                      p.list-group-item-text #{e.description}
             .col-sm-5
               ul.legend.list-unstyled.lead.text-right
                 li.medical
@@ -73,13 +63,6 @@ html(lang="en")
                       option(value="low") Low
                       option(value="mid") Medium
                       option(value="high", selected=true) High
-                .form-group
-                  label.control-label.col-sm-6 Location
-                  .col-sm-6
-                    select.form-control#location-menu
-                      option(value="US") US
-                      each s in states
-                        option(value=s) #{s}
                 //-.form-group
                   label.control-label.col-sm-6 Fill Empty Months
                   .col-sm-6
@@ -113,8 +96,15 @@ html(lang="en")
               a(href="javascript:0").btn.btn-success.btn-xs#time-next
                 span.glyphicon.glyphicon-forward
 
-          #trend-chart
-          #price-chart
+          .text-center
+            #trend-chart
+            #price-chart
+
+          .col-sm-4.col-sm-offset-4
+            select.form-control#location-menu
+              option(value="US") US
+              each state, abbr in states
+                option(value=abbr) #{state}
 
     script(src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js", charset="utf-8")
     script(src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js")
