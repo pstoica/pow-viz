@@ -315,8 +315,6 @@ function trendChart() {
   d3.json(filePath, function(error, json) {
     if (error) return console.warn(error);
 
-    // console.log(json);
-
     var maxDate = d3.max(json.prices, function(d) { return new Date(d._id); }),
         currentMonth = start_month,
         currentDate = new Date(start_year, start_month);
@@ -444,8 +442,6 @@ timelineEvents.on('click', function(e) {
 
 timelineEvents.on('mouseenter', function(e) {
   var state = $(this).data('state');
-
-  console.log($('.' + state).first()[0].classList);
 
   $('.' + state).first()[0].classList.add('active-state');
 });
