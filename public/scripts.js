@@ -277,7 +277,7 @@ var yAxis = d3.svg.axis()
     .scale(y)
     .orient("left")
     .tickFormat(function (d) { return "$" + d; })
-    .tickValues([0,5,10,15,20,25]);
+    .tickValues([5,15,25]);
 
 var line = d3.svg.line()
   .x(function(d) { return x(d.date); })
@@ -285,16 +285,34 @@ var line = d3.svg.line()
 
 // getting error when switching qualities
 var avgQuality = quality + "_avg";
-var priceLine = d3.svg.line()
-  .defined(function(d) { return d.value[avgQuality] != null; })
-  .x(function(d) { return x(d._id); })
-  .y(function(d) { return y(d.value[avgQuality]); });
 
-var svg = d3.select(priceContainer[0]).append("svg")
+var lowPriceLine = d3.svg.line()
+  .defined(function(d) { return d.value['low_avg'] != null; })
+  .x(function(d) { return x(d._id); })
+  .y(function(d) { return y(d.value['low_avg']); });
+
+var midPriceLine = d3.svg.line()
+  .defined(function(d) { return d.value['mid_avg'] != null; })
+  .x(function(d) { return x(d._id); })
+  .y(function(d) { return y(d.value['mid_avg']); });
+
+var highPriceLine = d3.svg.line()
+  .defined(function(d) { return d.value['high_avg'] != null; })
+  .x(function(d) { return x(d._id); })
+  .y(function(d) { return y(d.value['high_avg']); });
+
+var svg = d3.select(priceContainer[0])
+  .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+
+d3.select(priceContainer[0])
+  .append('div')
+  .attr('class', 'datamaps-hoverover')
+  .style('z-index', 10001)
+  .style('position', 'absolute');
 
 x.domain([new Date('2010'), new Date(2014, 2)]);
 y.domain([0, maxAverage]);
@@ -302,31 +320,45 @@ y.domain([0, maxAverage]);
 svg.append("g")
     .attr("class", "x axis")
     .attr("transform", "translate(0," + height + ")")
-    .call(xAxis)
-  .append("text")
+    .call(xAxis);
+  /*.append("text")
     .attr("x", 20)
-    .attr("y", -145)
+    .attr("y", -20)
     .attr("dy", ".75em")
     .text("Demand")
-    .attr("fill", "steelblue")
-    .attr("opacity", 0.5);
+    .attr("fill", "#5BC0DE")
+    .attr("opacity", 0.5);*/
 
 svg.append("g")
     .attr("class", "y axis")
-    .call(yAxis)
+    .call(yAxis);
+  /*.append("text")
+    .attr("x", 100)
+    .attr("y", -20)
+    .attr("dy", ".75em")
+    .text("Low")
+    .attr("fill", "#F2E187");
+
   .append("text")
     .attr("x", 20)
     .attr("y", -20)
     .attr("dy", ".75em")
-    .text("Price ($/g)")
-    .attr("fill", "red");
+    .text("Medium")
+    .attr("fill", "#98A758");
+
+  .append("text")
+    .attr("x", 20)
+    .attr("y", -20)
+    .attr("dy", ".75em")
+    .text("High")
+    .attr("fill", "#3D6C2A");*/
 
 function drawChart() {
   var location = $("#location-menu").val();
   quality = $("#quality-menu").val();
 
   var parseDate = d3.time.format("%Y-%m-%dT%H:%M:%S.%LZ").parse,
-      bisectDate = d3.bisector(function(d) { return d._id; }).left;
+      bisectDate = d3.bisector(function(d) { return d.date; }).left;
 
   if (location == "US")
     filePath = "/data/us.json";
@@ -373,21 +405,31 @@ function drawChart() {
 
     // remove old lines
     d3.select("path.line").remove();
-    d3.select("path.priceLine").remove();
+    d3.selectAll("path.priceLine").remove();
 
     svg.append("path")
         .datum(trends)
-        .attr("class", "line")
+        .attr("class", "line trendLine")
         .attr("d", line);
 
       svg.append("path")
           .datum(prices)
-          .attr("class", "priceLine")
-          .attr("d", priceLine);
+          .attr("class", "priceLine lowPriceLine")
+          .attr("d", lowPriceLine);
+
+      svg.append("path")
+          .datum(prices)
+          .attr("class", "priceLine midPriceLine")
+          .attr("d", midPriceLine);
+
+      svg.append("path")
+          .datum(prices)
+          .attr("class", "priceLine highPriceLine")
+          .attr("d", highPriceLine);
   });
 
   // display data on mouseover
-  var focus = svg.append("g")
+  /*var focus = svg.append("g")
     .attr("class", "focus")
     .style("display", "none");
   focus.append("circle")
@@ -395,9 +437,73 @@ function drawChart() {
   focus.append("text")
       .attr("x", -80)
       .attr("y", -20)
-      .attr("dy", ".35em");
+      .attr("dy", ".35em");*/
 
-  svg.append("rect")
+  d3.select('#price-chart').select('svg')
+    .on('mousemove', null)
+    .on('mouseenter', function() {
+      d3.select('#price-chart').select('.datamaps-hoverover').style('display', 'block');
+    })
+    .on('mousemove', function() {
+      var position = d3.mouse(this);
+
+      var x0 = x.invert(d3.mouse(this)[0] - 45),
+          i = bisectDate(trends, x0, 1),
+          d0 = trends[i - 1],
+          d,
+          price;
+
+      /*if (d0 && d1) {
+        d = x0 - d0.date > d1.date - x0 ? d1 : d0;
+      }*/
+
+      //console.log(d0);
+
+      price = $.grep(prices, function(e) {
+        return (e._id.getMonth() == d0.date.getMonth()) && (e._id.getFullYear() == d0.date.getFullYear());
+      })[0];
+
+      //console.log(price);
+
+      d3.select('#price-chart').select('.datamaps-hoverover')
+        .style('display', 'block')
+        .style('top', ( (position[1] + 30)) + "px")
+        .html(function() {
+          //var data = JSON.parse(element.attr('data-info'));
+          //if ( !data ) return '';
+          //return options.popupTemplate(d, data);
+          var result = '<div class="hoverinfo"><span class="lead">';
+
+          time = moment(d0.date).format('MMMM YYYY');
+
+          result += time + '</span><br>';
+
+          result += "<strong>Demand</strong> " + d3.format("r")((d0.val * 4)) + "<br>";
+
+          if (price) {
+            if (price.value.low_avg) {
+              result += "<strong>Low</strong> " + formatCurrency(price.value.low_avg) + "<br>";
+            }
+
+            if (price.value.mid_avg) {
+              result += "<strong>Medium</strong> " + formatCurrency(price.value.mid_avg) + "<br>"; 
+            }
+
+            if (price.value.high_avg) {
+              result += "<strong>High</strong> " + formatCurrency(price.value.high_avg) + "<br>";
+            }
+          }
+          result += '</div>';
+
+          return result;
+        })
+        .style('left', ( position[0]) + "px")
+    })
+    .on('mouseout', function() {
+      d3.select('#price-chart').select('.datamaps-hoverover').style('display', 'none');
+    });
+
+  /*svg.append("rect")
     .attr("class", "overlay")
     .attr("width", width)
     .attr("height", height)
@@ -416,7 +522,7 @@ function drawChart() {
     if (d.value[avgQuality] == null)
       focus.style("display", "none");
     focus.select("text").text(formatCurrency(d.value[avgQuality]) + " in " + d._id.getMonth() + "/" + d._id.getFullYear());
-  }
+  }*/
 }
 
 // lazy responsive map hack

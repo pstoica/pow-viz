@@ -82,13 +82,18 @@
 }
 
 .axis path {
-  display: none;
+  fill: none;
+  stroke: #999;
+  shape-rendering: crispEdges;
 }
 
 .axis line {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
+  /*
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+  */
+  display: none;
 }
 
 .grid path {
@@ -97,9 +102,12 @@
 
 .line {
   fill: none;
-  stroke: steelblue;
-  stroke-width: 1.5px;
-  opacity: 0.5;
+  stroke-width: 2px;
+}
+
+.trendLine {
+  stroke: #5BC0DE;
+  opacity: 0.3;
 }
 
 .active-state {
@@ -109,15 +117,56 @@
 }
 .priceLine {
   fill: none;
-  stroke: red;
+  stroke-width: 2px;
+}
+
+.lowPriceLine {
+  stroke: #F2E187;
+}
+
+.midPriceLine {
+  stroke: #98A758;
+}
+
+.highPriceLine {
+  stroke: #3D6C2A;
 }
 
 .overlay {
   fill: none;
   pointer-events: all;
+  border: 1px solid #CCC;
+  max-width: 230px;
 }
 
 .focus circle {
   fill: none;
   stroke: steelblue;
+}
+
+.datamaps-hoverover {
+  display: none;
+  margin-left: -15%;
+}
+
+.hoverinfo {
+  text-align: left;
+  padding: 4px;
+  border-radius: 1px;
+  background-color: #FFF;
+  font-size: 12px;
+  border: 1px solid #CCC;
+  max-width: 230px;
+}
+
+.hoverinfo hr {
+  border: 1px dotted #CCC;
+}
+
+#price-chart {
+  position: relative;
+
+  .datamaps-hoverover {
+    margin-left: 10%;
+  }
 }
