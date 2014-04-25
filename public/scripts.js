@@ -375,27 +375,49 @@ function drawChart() {
 
     prices = [];
 
+    foundDates = {};
+
     while (currentDate <= maxDate) {
-      prices.push({
+      /*prices.push({
         _id: currentDate,
         value: {
           low_avg: null,
           mid_avg: null,
           high_avg: null
         }
-      });
+      });*/
+
+      foundDates[currentDate.getUTCFullYear() + '-' + currentDate.getUTCMonth()] = false;
 
       currentMonth++;
       currentDate = new Date(start_year, currentMonth);
     }
 
-    prices = $.merge(prices, json.prices);
+    //prices = $.merge(prices, json.prices);
+    prices = json.prices;
 
-    prices.sort(function (a, b) { return d3.ascending(a._id, b._id) });
     prices.forEach(function(d) {
       d._id = new Date(d._id);
+      foundDates[d._id.getUTCFullYear() + '-' + d._id.getUTCMonth()] = true
       //d.value[avgQuality] = +d.value[avgQuality];
     });
+
+    for (var foundDate in foundDates) {
+      if (!foundDates[foundDate]) {
+        var tokens = foundDate.split('-');
+
+        prices.push({
+          _id: new Date(tokens[0], tokens[1]),
+          value: {
+            low_avg: null,
+            mid_avg: null,
+            high_avg: null
+          }
+        });
+      }
+    }
+
+    prices.sort(function (a, b) { return d3.ascending(a._id, b._id) });
 
     trends = json.trends;
     trends.forEach(function(d) {
@@ -457,10 +479,10 @@ function drawChart() {
         d = x0 - d0.date > d1.date - x0 ? d1 : d0;
       }*/
 
-      //console.log(d0);
+      console.log(d0.date);
 
       price = $.grep(prices, function(e) {
-        return (e._id.getMonth() == d0.date.getMonth()) && (e._id.getFullYear() == d0.date.getFullYear());
+        return (Math.abs(e._id - d0.date) < 36000000);
       })[0];
 
       //console.log(price);

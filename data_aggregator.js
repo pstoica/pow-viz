@@ -17,11 +17,17 @@ function DataAggregator(connectionURL, collection){
 
 function map(){
 	var d = new Date(this.date);
-	var key = (d.getMonth()+1) + '/1/' + d.getFullYear();
+	var key = (d.getUTCMonth()+1) + '/1/' + d.getUTCFullYear();
 	var val = {
 		low_avg: null,
 		mid_avg: null,
-		high_avg: null
+		high_avg: null,
+		low_total: 0,
+		mid_total: 0,
+		high_total: 0,
+		low_count: 0,
+		mid_count: 0,
+		high_count: 0
 	};
 
 	var translateQuality = {
@@ -31,25 +37,24 @@ function map(){
 	};
 
 	val[translateQuality[this.quality] + '_avg'] = this.ppg;
+	val[translateQuality[this.quality] + '_total'] = this.ppg;
+	val[translateQuality[this.quality] + '_count'] = 1;
 	emit(key, val);
 }
 
 function reduce(key,vals){
-	var reducedVal = {low_avg:[], mid_avg:[], high_avg:[]},
+	var reducedVal = {low_avg:[], mid_avg:[], high_avg:[], low_count: 0, mid_count: 0, high_count: 0, low_total: 0, mid_total: 0, high_total: 0},
 		qualities = ['low', 'mid', 'high'];
 
 	vals.forEach(function(row) {
 		qualities.forEach(function(quality) {
-			var val = row[quality + '_avg'];
-
-			if (val !== null) {
-				reducedVal[quality + '_avg'].push(val);
-			}
+			reducedVal[quality + '_total'] += row[quality + '_total'];
+			reducedVal[quality + '_count'] += row[quality + '_count'];
 		});
 	});
 
 	qualities.forEach(function(quality) {
-		reducedVal[quality + '_avg'] = Array.sum(reducedVal[quality + '_avg']) / reducedVal[quality + '_avg'].length;
+		reducedVal[quality + '_avg'] = reducedVal[quality + '_total'] / reducedVal[quality + '_count']/* / reducedVal[quality + '_avg'].length*/;
 	});
 
 	return reducedVal;
@@ -60,7 +65,13 @@ function mapByState() {
 	var val = {
 		low_avg: null,
 		mid_avg: null,
-		high_avg: null
+		high_avg: null,
+		low_total: 0,
+		mid_total: 0,
+		high_total: 0,
+		low_count: 0,
+		mid_count: 0,
+		high_count: 0
 	};
 
 	var translateQuality = {
@@ -70,6 +81,8 @@ function mapByState() {
 	};
 
 	val[translateQuality[this.quality] + '_avg'] = this.ppg;
+	val[translateQuality[this.quality] + '_total'] = this.ppg;
+	val[translateQuality[this.quality] + '_count'] = 1;
 	emit(key, val);
 }
 
@@ -160,7 +173,7 @@ DataAggregator.prototype.getStateAverages = function getStateAverages(startDate,
 		reduce,
 		{
 			query: {
-				date:{$gte: startDate, $lt:endDate}
+				date:{$gte: startDate, $lt: endDate}
 			},
 			out: {inline:1}
 		},
@@ -168,6 +181,14 @@ DataAggregator.prototype.getStateAverages = function getStateAverages(startDate,
 			cb(err,data,stats);
 		}
 	);
+}
+
+function padNumber(number) {
+	if (number < 10) {
+		return "0" + number;
+	} else {
+		return number;
+	}
 }
 
 module.exports = DataAggregator;
