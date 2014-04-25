@@ -258,7 +258,7 @@ var margin = {top: 20, right: 20, bottom: 30, left: 50},
     width = 550 - margin.left - margin.right,
     height = 200 - margin.top - margin.bottom,
     trends,
-    prices = [],
+    prices,
     filePath,
     quality = $("#quality-menu").val();
 
@@ -313,6 +313,8 @@ function drawChart() {
     var maxDate = d3.max(json.prices, function(d) { return new Date(d._id); }),
         currentMonth = start_month,
         currentDate = new Date(start_year, start_month);
+
+    prices = [];
 
     while (currentDate <= maxDate) {
       prices.push({
