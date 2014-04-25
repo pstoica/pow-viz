@@ -191,23 +191,28 @@ function drawEvents() {
       var time,
           result;
 
-      result = '<div class="hoverinfo"><span class="lead">';
+      var date = new Date(data.date);
 
-      if (data.specificDate) {
-        time = moment(data.date).format("MMMM Do, YYYY");
-      } else {
-        time = moment(data.date).format('MMMM YYYY');
+      // temporary while we don't have pre-2010 dates
+      if (!(date.getFullYear() == 2000)) {
+        result = '<div class="hoverinfo"><span class="lead">';
+
+        if (data.specificDate) {
+          time = moment(data.date).format("MMMM Do, YYYY");
+        } else {
+          time = moment(data.date).format('MMMM YYYY');
+        }
+
+        result += time + '</span><br>';
+
+        if (data.description) {
+          result += data.description;
+        }
+
+        result += '</div>';
+
+        return result;
       }
-
-      result += time + '</span><br>';
-
-      if (data.description) {
-        result += data.description;
-      }
-
-      result += '</div>';
-
-      return result;
     },
     //highlightOnHover: false,
     highlightBorderColor: '#555555',
@@ -479,7 +484,7 @@ function drawChart() {
         d = x0 - d0.date > d1.date - x0 ? d1 : d0;
       }*/
 
-      console.log(d0.date);
+      //console.log(d0.date);
 
       price = $.grep(prices, function(e) {
         return (Math.abs(e._id - d0.date) < 36000000);
