@@ -18,20 +18,19 @@ var currentAverages,
 var events = [
      // events that happened before 2010
      { date: new Date(2000, 1, 1), state: 'ME',  fillKey: type[2], description: 'It removes state-level criminal penalties on the use, possession and cultivation of marijuana by patients who possess an oral or written "professional opinion" from their physician that he or she "might benefit from the medical use of marijuana"', latitude: 45.167, longitude: -69.051, radius: radius
-  }, { date: new Date(2000, 1, 1), state: 'CA',  fillKey: type[2], description: '', latitude: 36.93, longitude: -119.86, radius: radius
-  }, { date: new Date(2000, 1, 1), state: 'NV',  fillKey: type[2], description: '', latitude: 39.89, longitude: -116.87, radius: radius
-  }, { date: new Date(2000, 1, 1), state: 'OR',  fillKey: type[2], description: '', latitude: 43.967, longitude: -120.591, radius: radius
-  }, { date: new Date(2000, 1, 1), state: 'NM',  fillKey: type[1], description: '', latitude: 34.61, longitude: -105.98, radius: radius
-  }, { date: new Date(2000, 1, 1), state: 'MT',  fillKey: type[1], description: '', latitude: 46.99, longitude: -109.89, radius: radius
-  }, { date: new Date(2000, 1, 1), state: 'NE',  fillKey: type[0], description: '', latitude: 41.39, longitude: -99.52, radius: radius
-  }, { date: new Date(2000, 1, 1), state: 'MN',  fillKey: type[0], description: '', latitude: 46.12, longitude: -94.64, radius: radius
-  }, { date: new Date(2000, 1, 1), state: 'AK',  fillKey: type[2], description: '', latitude: 65.62, longitude: -150.14, radius: radius
-  }, { date: new Date(2000, 1, 1), state: 'HI',  fillKey: type[1], description: '', latitude: 21.02, longitude: -157.08, radius: radius
-  }, { date: new Date(2000, 1, 1), state: 'MI',  fillKey: type[0], description: '', latitude: 32.82, longitude: -89.74, radius: radius
-  }, { date: new Date(2000, 1, 1), state: 'NY',  fillKey: type[0], description: '', latitude: 43.17, longitude: -75.74, radius: radius
-  }, { date: new Date(2000, 1, 1), state: 'MI',  fillKey: type[1], description: '', latitude: 43.30, longitude: -84.49, radius: radius
-  }, { date: new Date(2000, 1, 1), state: 'NC',  fillKey: type[0], description: '', latitude: 35.88, longitude: -79.09, radius: radius
-  }, { date: new Date(2000, 1, 1), state: 'OH',  fillKey: type[0], description: '', latitude: 40.41, longitude: -82.75, radius: radius
+  }, { date: new Date(1996, 10, 1), state: 'CA',  fillKey: type[2], description: 'Approved Nov. 5, 1996: removes state-level criminal penalties on the use, possession and cultivation of marijuana by patients who possess a "written or oral recommendation" from their physician that he or she "would benefit from medical marijuana." Decriminalization means no prison time or criminal record for first-time possession of a small amount for personal consumption.', latitude: 36.93, longitude: -119.86, radius: radius
+  }, { date: new Date(2000, 10, 1), state: 'NV',  fillKey: type[2], description: 'Sixty-five percent of voters approved Question 9 on November 7, 2000, which amends the states’ constitution to recognize the medical use of marijuana. Possession of 1 ounce or less of marijuana is a misdemeanor punishable by a fine up to $600 or mandatory assessment for addiction for the first offense.', latitude: 39.89, longitude: -116.87, radius: radius
+  }, { date: new Date(1998, 11, 1), state: 'OR',  fillKey: type[2], description: 'December 3, 1998: Measure 67 removes state-level criminal penalties on the use, possession and cultivation of marijuana by patients who possess a signed recommendation from their physician. Decriminalization means no prison time or criminal record for first-time possession of a small amount for personal consumption.', latitude: 43.967, longitude: -120.591, radius: radius
+  }, { date: new Date(2007, 9, 1), state: 'NM',  fillKey: type[1], description: 'The law mandates the state Department of Health by October 1, 2007, to promulgate rules governing the use and distribution of medical cannabis to state-authorized patients.', latitude: 34.61, longitude: -105.98, radius: radius
+  }, { date: new Date(2004, 10, 1), state: 'MT',  fillKey: type[1], description: 'Initiative 148 on November 2, 2004. The law took effect that same day. It removes state-level criminal penalties on the use, possession and cultivation of marijuana by patients who possess written documentation from their physicians authorizing the medical use of marijuana.', latitude: 46.99, longitude: -109.89, radius: radius
+  }, { date: new Date(2006, 1, 1), state: 'NE',  fillKey: type[0], description: '2006: Decriminalization means no prison time or criminal record for first-time possession of a small amount for personal consumption. The conduct is treated like a minor traffic violation.', latitude: 41.39, longitude: -99.52, radius: radius
+  }, { date: new Date(1995, 1, 1), state: 'MN',  fillKey: type[0], description: '1995: Possession of 42.5 grams or less is a misdmeanor punishable by a maximum fine of $200.', latitude: 46.12, longitude: -94.64, radius: radius
+  }, { date: new Date(1999, 2, 1), state: 'AK',  fillKey: type[2], description: 'March 4, 1999: Ballot Measure #8 removes state-level criminal penalties on the use, possession and cultivation of marijuana by patients who possess written documentation from their physician advising that they "might benefit from the medical use of marijuana."', latitude: 65.62, longitude: -150.14, radius: radius
+  }, { date: new Date(2000, 11, 1), state: 'HI',  fillKey: type[1], description: 'December 28, 2000: The law removes state-level criminal penalties on the use, possession and cultivation of marijuana by patients who possess a signed statement from their physician affirming that he or she suffers from a debilitating condition and that the "potential benefits of medical use of marijuana would likely outweigh the health risks."', latitude: 21.02, longitude: -157.08, radius: radius
+  }, { date: new Date(2008, 11, 1), state: 'MI',  fillKey: type[0], description: 'December 4, 2008: Proposal 1 removes state-level criminal penalties on the use, possession and cultivation of marijuana by patients who possess written documentation from their physicians authorizing the medical use of marijuana.', latitude: 32.82, longitude: -89.74, radius: radius
+  }, { date: new Date(2000, 1, 1), state: 'NY',  fillKey: type[0], description: 'For a first offender, possession of up to 25 grams of marijuana is punishable by a fine of $100.', latitude: 43.17, longitude: -75.74, radius: radius
+  }, { date: new Date(1978, 1, 1), state: 'NC',  fillKey: type[0], description: '1978: Possession of a half ounce or less marijuana is a Class 3 misdemeanor and a maximum fine of $200.', latitude: 35.88, longitude: -79.09, radius: radius
+  }, { date: new Date(1978, 1, 1), state: 'OH',  fillKey: type[0], description: '1978: Decriminalization means no prison time or criminal record for first-time possession of a small amount for personal consumption.', latitude: 40.41, longitude: -82.75, radius: radius
   }, {
     date: new Date(2010, 0, 11),
     state: 'NJ', 
@@ -283,7 +282,6 @@ var line = d3.svg.line()
   .x(function(d) { return x(d.date); })
   .y(function(d) { return y(d.val); });
 
-// getting error when switching qualities
 var avgQuality = quality + "_avg";
 
 var lowPriceLine = d3.svg.line()
