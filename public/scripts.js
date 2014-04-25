@@ -328,8 +328,7 @@ function drawChart() {
       currentDate = new Date(start_year, currentMonth);
     }
 
-    // prices = $.merge(prices, json.prices);
-    prices = json.prices;
+    prices = $.merge(prices, json.prices);
 
     prices.sort(function (a, b) { return d3.ascending(a._id, b._id) });
     prices.forEach(function(d) {
