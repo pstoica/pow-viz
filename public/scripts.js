@@ -262,6 +262,9 @@ var margin = {top: 20, right: 20, bottom: 30, left: 50},
     filePath,
     quality = $("#quality-menu").val();
 
+  var formatValue = d3.format(",.2f"),
+      formatCurrency = function(d) { return "$" + formatValue(d); };
+
 var x = d3.time.scale()
     .range([0, width]);
 var y = d3.scale.linear()
@@ -273,7 +276,8 @@ var xAxis = d3.svg.axis()
 var yAxis = d3.svg.axis()
     .scale(y)
     .orient("left")
-    .tickValues([0,5,10,15,20,25,30]);
+    .tickFormat(function (d) { return "$" + d; })
+    .tickValues([0,5,10,15,20,25]);
 
 var line = d3.svg.line()
   .x(function(d) { return x(d.date); })
@@ -292,15 +296,37 @@ var svg = d3.select(priceContainer[0]).append("svg")
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+x.domain([new Date('2010'), new Date(2014, 2)]);
+y.domain([0, maxAverage]);
+
+svg.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0," + height + ")")
+    .call(xAxis)
+  .append("text")
+    .attr("x", 20)
+    .attr("y", -145)
+    .attr("dy", ".75em")
+    .text("Demand")
+    .attr("fill", "steelblue")
+    .attr("opacity", 0.5);
+
+svg.append("g")
+    .attr("class", "y axis")
+    .call(yAxis)
+  .append("text")
+    .attr("x", 20)
+    .attr("y", -20)
+    .attr("dy", ".75em")
+    .text("Price ($/g)")
+    .attr("fill", "red");
 
 function drawChart() {
   var location = $("#location-menu").val();
   quality = $("#quality-menu").val();
 
   var parseDate = d3.time.format("%Y-%m-%dT%H:%M:%S.%LZ").parse,
-      bisectDate = d3.bisector(function(d) { return d._id; }).left,
-      formatValue = d3.format(",.2f"),
-      formatCurrency = function(d) { return "$" + formatValue(d); };
+      bisectDate = d3.bisector(function(d) { return d._id; }).left;
 
   if (location == "US")
     filePath = "/data/us.json";
@@ -344,30 +370,6 @@ function drawChart() {
       d.val = d.val / 6.0; // arbitrary proportioning
     });
 
-    x.domain([new Date('2010'), d3.max(trends, function(d) { return d.date; })]);
-    y.domain([0, maxAverage]);
-
-    svg.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0," + height + ")")
-        .call(xAxis)
-      .append("text")
-        .attr("x", 20)
-        .attr("y", -130)
-        .attr("dy", ".75em")
-        .text("Demand")
-        .attr("fill", "steelblue");
-
-    svg.append("g")
-        .attr("class", "y axis")
-        .call(yAxis)
-      .append("text")
-        .attr("x", 20)
-        .attr("y", -3)
-        .attr("dy", ".75em")
-        .text("Price ($/g)")
-        .attr("fill", "red");
-
     // remove old lines
     d3.select("path.line").remove();
     d3.select("path.priceLine").remove();
@@ -403,16 +405,16 @@ function drawChart() {
     .on("mousemove", mousemove);
 
   function mousemove() {
-    if (prices[0] != undefined) {
-      var x0 = x.invert(d3.mouse(this)[0]),
-          i = bisectDate(prices, x0, 1),
-          d0 = prices[i - 1],
-          d1 = prices[i],
-          d = x0 - d0._id > d1._id - x0 ? d1 : d0;
+    var x0 = x.invert(d3.mouse(this)[0]),
+        i = bisectDate(prices, x0, 1),
+        d0 = prices[i - 1],
+        d1 = prices[i],
+        d = x0 - d0._id > d1._id - x0 ? d1 : d0;
 
-      focus.attr("transform", "translate(" + x(d._id) + "," + y(d.value[avgQuality]) + ")");
-      focus.select("text").text(formatCurrency(d.value[avgQuality]) + " in " + d._id.getMonth() + "/" + d._id.getFullYear());
-    }
+    focus.attr("transform", "translate(" + x(d._id) + "," + y(d.value[avgQuality]) + ")");
+    if (d.value[avgQuality] == null)
+      focus.style("display", "none");
+    focus.select("text").text(formatCurrency(d.value[avgQuality]) + " in " + d._id.getMonth() + "/" + d._id.getFullYear());
   }
 }
 
