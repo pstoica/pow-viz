@@ -478,7 +478,7 @@ function drawChart() {
 
           result += time + '</span><br>';
 
-          result += "<strong>Demand</strong> " + d3.format("r")((d0.val * 4)) + "<br>";
+          result += "<strong>Demand</strong> " + d3.format("f")((d0.val * 4)) + "<br>";
 
           if (price) {
             if (price.value.low_avg) {
