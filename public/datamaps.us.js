@@ -142,7 +142,7 @@
       svg.selectAll('.datamaps-subunit')
         .on('click', function(d) {
           $("#location-menu").val(d.id);
-          trendChart();
+          drawChart();
           
         })
         .on('mouseover', function(d) {

@@ -253,59 +253,54 @@ function colorMap() {
   });
 }
 
-function trendChart() {
-  // TODO: should transition using D3
-  priceContainer.empty();
+// initialize chart
+var margin = {top: 20, right: 20, bottom: 30, left: 50},
+    width = 550 - margin.left - margin.right,
+    height = 200 - margin.top - margin.bottom,
+    trends,
+    prices = [],
+    filePath,
+    quality = $("#quality-menu").val();
 
-  var margin = {top: 20, right: 20, bottom: 30, left: 50},
-      width = 550 - margin.left - margin.right,
-      height = 200 - margin.top - margin.bottom,
-      trends,
-      prices = [],
-      filePath,
-      location = $("#location-menu").val(),
-      quality = $("#quality-menu").val();
+var x = d3.time.scale()
+    .range([0, width]);
+var y = d3.scale.linear()
+    .range([height, 0]);
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom")
+    .ticks(d3.time.year, 1);
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left")
+    .tickValues([0,5,10,15,20,25,30]);
 
-  var x = d3.time.scale()
-      .range([0, width]);
-  var y = d3.scale.linear()
-      .range([height, 0]);
-  var xAxis = d3.svg.axis()
-      .scale(x)
-      .orient("bottom")
-      .ticks(d3.time.year, 1);
-  var yAxis = d3.svg.axis()
-      .scale(y)
-      .orient("left")
-      .ticks(5);
+var line = d3.svg.line()
+  .x(function(d) { return x(d.date); })
+  .y(function(d) { return y(d.val); });
 
-  var line = d3.svg.line()
-    .x(function(d) { return x(d.date); })
-    .y(function(d) { return y(d.val); });
+// getting error when switching qualities
+var avgQuality = quality + "_avg";
+var priceLine = d3.svg.line()
+  .defined(function(d) { return d.value[avgQuality] != null; })
+  .x(function(d) { return x(d._id); })
+  .y(function(d) { return y(d.value[avgQuality]); });
 
-  // getting error when switching qualities
-  var avgQuality = quality + "_avg";
-  var priceLine = d3.svg.line()
-    .defined(function(d) { return d.value[avgQuality] != null; })
-    .x(function(d) { return x(d._id); })
-    .y(function(d) { return y(d.value[avgQuality]); });
+var svg = d3.select(priceContainer[0]).append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-  var svg = d3.select(priceContainer[0]).append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-  // Draw Y-axis grid lines
-  svg.selectAll("line.y")
-    .data(y.ticks(10))
-    .enter().append("line")
-    .attr("class", "y")
-    .attr("x1", 0)
-    .attr("x2", width)
-    .attr("y1", y)
-    .attr("y2", y)
-    .style("stroke", "#ccc");
+function drawChart() {
+  var location = $("#location-menu").val();
+  quality = $("#quality-menu").val();
+
+  var parseDate = d3.time.format("%Y-%m-%dT%H:%M:%S.%LZ").parse,
+      bisectDate = d3.bisector(function(d) { return d._id; }).left,
+      formatValue = d3.format(",.2f"),
+      formatCurrency = function(d) { return "$" + formatValue(d); };
 
   if (location == "US")
     filePath = "/data/us.json";
@@ -333,7 +328,8 @@ function trendChart() {
       currentDate = new Date(start_year, currentMonth);
     }
 
-    prices = $.merge(prices, json.prices);
+    // prices = $.merge(prices, json.prices);
+    prices = json.prices;
 
     prices.sort(function (a, b) { return d3.ascending(a._id, b._id) });
     prices.forEach(function(d) {
@@ -344,7 +340,7 @@ function trendChart() {
     trends = json.trends;
     trends.forEach(function(d) {
       d.date = new Date(d.date);
-      d.val = d.val / 7.0; // arbitrary proportioning
+      d.val = d.val / 6.0; // arbitrary proportioning
     });
 
     x.domain([new Date('2010'), d3.max(trends, function(d) { return d.date; })]);
@@ -366,23 +362,57 @@ function trendChart() {
         .call(yAxis)
       .append("text")
         .attr("x", 20)
+        .attr("y", -3)
         .attr("dy", ".75em")
         .text("Price ($/g)")
         .attr("fill", "red");
+
+    // remove old lines
+    d3.select("path.line").remove();
+    d3.select("path.priceLine").remove();
 
     svg.append("path")
         .datum(trends)
         .attr("class", "line")
         .attr("d", line);
 
-    if (prices[0]) {
       svg.append("path")
           .datum(prices)
-          .attr("class", "line")
-          .style("stroke", "red")
+          .attr("class", "priceLine")
           .attr("d", priceLine);
-    }
   });
+
+  // display data on mouseover
+  var focus = svg.append("g")
+    .attr("class", "focus")
+    .style("display", "none");
+  focus.append("circle")
+      .attr("r", 4.5);
+  focus.append("text")
+      .attr("x", -80)
+      .attr("y", -20)
+      .attr("dy", ".35em");
+
+  svg.append("rect")
+    .attr("class", "overlay")
+    .attr("width", width)
+    .attr("height", height)
+    .on("mouseover", function() { focus.style("display", null); })
+    .on("mouseout", function() { focus.style("display", "none"); })
+    .on("mousemove", mousemove);
+
+  function mousemove() {
+    if (prices[0] != undefined) {
+      var x0 = x.invert(d3.mouse(this)[0]),
+          i = bisectDate(prices, x0, 1),
+          d0 = prices[i - 1],
+          d1 = prices[i],
+          d = x0 - d0._id > d1._id - x0 ? d1 : d0;
+
+      focus.attr("transform", "translate(" + x(d._id) + "," + y(d.value[avgQuality]) + ")");
+      focus.select("text").text(formatCurrency(d.value[avgQuality]) + " in " + d._id.getMonth() + "/" + d._id.getFullYear());
+    }
+  }
 }
 
 // lazy responsive map hack
@@ -391,7 +421,6 @@ function trendChart() {
 })*/
 
 // form field listeners
-// TODO: change what bubbles are shown according to active date
 var timeSlider = $("#time-slider"),
     qualityMenu = $("#quality-menu"),
     timeBack = $("#time-back"),
@@ -406,9 +435,9 @@ var timeSlider = $("#time-slider"),
 timeSlider.on('change', updateTime);
 qualityMenu.on('change', function() {
   colorMap();
-  trendChart();
+  drawChart();
 });
-locationMenu.on('change', trendChart)
+locationMenu.on('change', drawChart);
 
 timeBack.on('click', function() {
   timeSlider.val(parseInt(timeSlider.val()) - 1);
@@ -474,7 +503,7 @@ function initialize() {
   drawMap();
   colorMap();
   drawEvents();
-  trendChart();
+  drawChart();
 }
 
 initialize();
