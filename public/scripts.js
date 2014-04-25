@@ -338,7 +338,8 @@ function drawChart() {
 
     var maxDate = d3.max(json.prices, function(d) { return new Date(d._id); }),
         currentMonth = start_month,
-        currentDate = new Date(start_year, start_month);
+        currentDate = new Date(start_year, start_month),
+        trendScale = d3.scale.linear().domain([0, 100]).range([0, maxAverage]);
 
     prices = [];
 
@@ -367,7 +368,7 @@ function drawChart() {
     trends = json.trends;
     trends.forEach(function(d) {
       d.date = new Date(d.date);
-      d.val = d.val / 6.0; // arbitrary proportioning
+      d.val = trendScale(d.val);
     });
 
     // remove old lines
