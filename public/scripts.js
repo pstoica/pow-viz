@@ -156,17 +156,17 @@ function drawMap() {
             return states[e._id] === geography.properties.name;
           })[0].value;
 
-          if (stateData.low_avg) {
-            result += "<strong>Low</strong>";
-            result += " $" + stateData.low_avg.toFixed(2) + "<br>";
+          if (stateData.high_avg) {
+            result += "<strong>High</strong>";
+            result += " $" + stateData.high_avg.toFixed(2) + "<br>";
           }
           if (stateData.mid_avg) {
             result += "<strong>Medium</strong>";
             result += " $" + stateData.mid_avg.toFixed(2) + "<br>";
           }
-          if (stateData.high_avg) {
-            result += "<strong>High</strong>";
-            result += " $" + stateData.high_avg.toFixed(2) + "<br>";
+          if (stateData.low_avg) {
+            result += "<strong>Low</strong>";
+            result += " $" + stateData.low_avg.toFixed(2) + "<br>";
           }
         }
         result += "</div>";
@@ -504,16 +504,16 @@ function drawChart() {
           result += "<strong>Demand</strong> " + d3.format("f")((d0.val * 4)) + "<br>";
 
           if (price) {
-            if (price.value.low_avg) {
-              result += "<strong>Low</strong> " + formatCurrency(price.value.low_avg) + "<br>";
+            if (price.value.high_avg) {
+              result += "<strong>High</strong> " + formatCurrency(price.value.high_avg) + "<br>";
             }
 
             if (price.value.mid_avg) {
               result += "<strong>Medium</strong> " + formatCurrency(price.value.mid_avg) + "<br>"; 
             }
 
-            if (price.value.high_avg) {
-              result += "<strong>High</strong> " + formatCurrency(price.value.high_avg) + "<br>";
+            if (price.value.low_avg) {
+              result += "<strong>Low</strong> " + formatCurrency(price.value.low_avg) + "<br>";
             }
           }
           result += '</div>';
