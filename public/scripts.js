@@ -315,7 +315,7 @@ d3.select(priceContainer[0])
   .style('z-index', 10001)
   .style('position', 'absolute');
 
-x.domain([new Date('2010'), new Date(2014, 2)]);
+x.domain([new Date('2010'), new Date(2014, 3)]);
 y.domain([0, maxAverage]);
 
 svg.append("g")

@@ -86,7 +86,7 @@ html(lang="en")
             form#slider-container.form-inline
               span.control-label  #{moment(start_date).format('MMM YYYY')}
               input#time-slider(type="range", min="0", max="#{moment(end_date).diff(moment(start_date), 'months', true) - 1}", value="0")
-              span.control-label #{moment(end_date).format('MMM YYYY')} 
+              span.control-label #{moment(end_date).subtract('months', 1).format('MMM YYYY')} 
 
             .btn-group
               a(href="javascript:0").btn.btn-success.btn-xs#time-back
